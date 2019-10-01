@@ -4036,6 +4036,11 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
+foundation-sites@^6.5.3:
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/foundation-sites/-/foundation-sites-6.5.3.tgz#85373aaed72233ca0d16fdfcb034e976cc6943c9"
+  integrity sha512-ZwI0idjHHjezh6jRjpPxkczvmtUuJ1uGatZHpyloX0MvsFHfM0BFoxrqdXryXugGPdmb+yJi3JYMnz6+5t3K1A==
+
 fragment-cache@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/fragment-cache/-/fragment-cache-0.2.1.tgz#4290fad27f13e89be7f33799c6bc5a0abfff0d19"
@@ -7897,7 +7902,7 @@ react-dev-utils@^9.0.4:
     strip-ansi "5.2.0"
     text-table "0.2.0"
 
-react-dom@16.10.1:
+react-dom@^16.10.1:
   version "16.10.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.10.1.tgz#479a6511ba34a429273c213cbc2a9ac4d296dac1"
   integrity sha512-SmM4ZW0uug0rn95U8uqr52I7UdNf6wdGLeXDmNLfg3y5q5H9eAbdjF5ubQc3bjDyRrvdAB2IKG7X0GzSpnn5Mg==
@@ -7978,7 +7983,7 @@ react-scripts@3.1.2:
   optionalDependencies:
     fsevents "2.0.7"
 
-react@16.10.1:
+react@^16.10.1:
   version "16.10.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.10.1.tgz#967c1e71a2767dfa699e6ba702a00483e3b0573f"
   integrity sha512-2bisHwMhxQ3XQz4LiJJwG3360pY965pTl/MRrZYxIBKVj4fOHoDs5aZAkYXGxDRO1Li+SyjTAilQEbOmtQJHzA==
