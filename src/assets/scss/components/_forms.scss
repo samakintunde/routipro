@@ -1,0 +1,14 @@
+.form {
+  .form-group {
+    padding: rem-calc(12) 0;
+  }
+
+  label {
+    font-size: rem-calc(16);
+    margin-bottom: rem-calc(8);
+  }
+
+  .form-action {
+    width: 100%;
+  }
+}

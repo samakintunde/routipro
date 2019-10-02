@@ -1,0 +1,24 @@
+// FOUNDATION
+@import "./settings";
+@import "../../../node_modules/foundation-sites/scss/foundation.scss";
+
+// TYPOGRAPHY
+@include foundation-typography;
+
+// Grids (choose one)
+@include foundation-xy-grid-classes;
+// @include foundation-flex-classes;
+
+// BASE
+@import "./base/resets";
+@import "./base/colors";
+
+// COMPONENTS
+@import "./components/buttons";
+@import "./components/forms";
+@import "./components/header";
+@import "./components/input";
+
+// UTILS
+@import "./utils/text";
+@import "./utils/color";
