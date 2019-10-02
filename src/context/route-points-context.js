@@ -1,18 +1,19 @@
 import React, { createContext, useReducer } from "react";
-import { initialState, reducer } from "../reducers/active-points";
+import {
+  initialState,
+  routePointsReducer
+} from "../reducers/route-points-reducer";
 
 const ActivePointsContext = createContext(initialState);
 
 const ActivePointsProvider = ({ children }) => {
-  const [activePoints, dispatchActivePoints] = useReducer(
-    reducer,
+  const [routePoints, dispatchRoutePoints] = useReducer(
+    routePointsReducer,
     initialState
   );
 
   return (
-    <ActivePointsContext.Provider
-      value={{ activePoints, dispatchActivePoints }}
-    >
+    <ActivePointsContext.Provider value={{ routePoints, dispatchRoutePoints }}>
       {children}
     </ActivePointsContext.Provider>
   );

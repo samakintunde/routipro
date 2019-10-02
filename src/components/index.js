@@ -1,4 +1,5 @@
 import Header from "./header";
 import Input from "./input";
+import Map from "./map";
 
-export { Header, Input };
+export { Header, Input, Map };

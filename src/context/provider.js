@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivePointsProvider } from "./active-points";
+import { ActivePointsProvider } from "./route-points-context";
 
 const Provider = ({ children }) => {
   return <ActivePointsProvider>{children}</ActivePointsProvider>;
