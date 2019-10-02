@@ -14,15 +14,19 @@ const Input = props => {
   } = props;
 
   const handleFocus = e => {
-    if (value) {
-      handleSuggestion(name, {});
-    }
     setFocused(!focused);
+
+    // handleSuggestion(name, {});
   };
 
+  /**
+   * Passes the value of the suggestion to it's parent
+   * @param {String} suggestion A suggestion description
+   */
   const handleSuggestionClick = suggestion => {
-    setFocused(false);
+    // setFocused(true);
     handleSuggestion(name, suggestion);
+    setFocused(false);
   };
 
   return (
@@ -34,11 +38,13 @@ const Input = props => {
         value={value}
         onChange={handleInput}
         onFocus={handleFocus}
+        autoComplete="off"
+        // onBlur={handleFocus}
       />
       {focused && (
         <AutocompleteSuggestions
           suggestions={suggestions}
-          handleClick={handleSuggestionClick}
+          handleSuggestionClick={handleSuggestionClick}
         />
       )}
     </div>

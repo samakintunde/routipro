@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 
 import { Input } from "../components";
+import { RoutePointsContext } from "../context/route-points-context";
 import { PLACES_AUTOCOMPLETE_API, PLACES_API } from "../services/api";
+import { SET_ACTIVE_POINTS } from "../actions/types";
 
-const RouteForm = () => {
+const RouteForm = props => {
+  const { routePoints, dispatchRoutePoints } = useContext(RoutePointsContext);
+  console.log(routePoints);
   const [form, setForm] = useState({
     origin: "",
     destination: ""
@@ -28,8 +32,10 @@ const RouteForm = () => {
    * */
   const fetchPlace = async (origin, destination) => {
     [origin, destination].forEach(async place => {
-      const res = await axios.get(`${PLACES_API}&input=${place}`);
-      console.log("res", res);
+      const res = await axios.get(
+        `${PLACES_API}&types=bus_station&inputtype=textquery&fields=name,icon,type,geometry/viewport,place_id&input=${place}`
+      );
+      console.log(place, res);
     });
   };
 
@@ -56,13 +62,28 @@ const RouteForm = () => {
     e.preventDefault();
     const { origin, destination } = form;
     fetchPlace(origin, destination);
+    dispatchRoutePoints({
+      type: SET_ACTIVE_POINTS,
+      payload: {
+        origin,
+        destination
+      }
+    });
+    console.log("origin", routePoints);
+    // route();
   };
 
   /**
-   * * Handles the click on an autocomplete suggestion. Sets it to state.
+   * Handles the click on an autocomplete suggestion. Sets it to state.
    * @param suggestion - A suggestion event
    */
-  const handleSuggestionClick = () => {};
+  const handleSuggestionClick = (name, suggestion) => {
+    setForm({
+      ...form,
+      [name]: suggestion
+    });
+    setSuggestions([]);
+  };
 
   return (
     <form className="form" onSubmit={handleFormSubmit}>
@@ -71,8 +92,8 @@ const RouteForm = () => {
         <Input
           id="start-point"
           type="text"
-          name="start"
-          value={form.start}
+          name="origin"
+          value={form.origin}
           handleInput={handleInputChange}
           handleSuggestion={handleSuggestionClick}
           suggestions={suggestions}
@@ -83,8 +104,8 @@ const RouteForm = () => {
         <Input
           id="end-point"
           type="text"
-          name="end"
-          value={form.end}
+          name="destination"
+          value={form.destination}
           handleInput={handleInputChange}
           handleSuggestion={handleSuggestionClick}
           suggestions={suggestions}

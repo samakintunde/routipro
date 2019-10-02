@@ -4,19 +4,19 @@ import {
   routePointsReducer
 } from "../reducers/route-points-reducer";
 
-const ActivePointsContext = createContext(initialState);
+const RoutePointsContext = createContext(initialState);
 
-const ActivePointsProvider = ({ children }) => {
+const RoutePointsProvider = ({ children }) => {
   const [routePoints, dispatchRoutePoints] = useReducer(
     routePointsReducer,
     initialState
   );
 
   return (
-    <ActivePointsContext.Provider value={{ routePoints, dispatchRoutePoints }}>
+    <RoutePointsContext.Provider value={{ routePoints, dispatchRoutePoints }}>
       {children}
-    </ActivePointsContext.Provider>
+    </RoutePointsContext.Provider>
   );
 };
 
-export { initialState, ActivePointsContext, ActivePointsProvider };
+export { initialState, RoutePointsContext, RoutePointsProvider };

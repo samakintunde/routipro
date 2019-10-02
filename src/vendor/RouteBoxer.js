@@ -614,4 +614,4 @@ Number.prototype.toBrng = function() {
   return (this.toDeg() + 360) % 360;
 };
 
-window.RouteBoxer = RouteBoxer;
+export default RouteBoxer;

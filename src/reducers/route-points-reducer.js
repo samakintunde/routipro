@@ -11,10 +11,11 @@ const initialState = {
 
 const routePointsReducer = (state = initialState, action) => {
   const { payload, type } = action;
-
+  console.log(action);
   switch (type) {
     case SET_ACTIVE_POINTS:
-      return { ...payload };
+      console.log("from reducer", payload);
+      return payload;
     case SET_ORIGIN_POINT:
       return { ...state, origin: payload };
     case SET_DESTINATION_POINT:
