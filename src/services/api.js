@@ -9,6 +9,7 @@ const PLACES_API = `${PROXY}/https://maps.googleapis.com/maps/api/place/findplac
 const DIRECTIONS_API = `${PROXY}/https://maps.googleapis.com/maps/api/directions/json?language=en&components=country:ng&key=${process.env.REACT_APP_MAPS_API_KEY}`;
 
 export {
+  PROXY,
   PLACES_API,
   PLACES_AUTOCOMPLETE_API,
   PLACES_NEARBY_API,

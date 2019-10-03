@@ -1,16 +1,30 @@
-import React, { useEffect, useContext, useCallback } from "react";
+import React, {
+  useEffect,
+  useContext,
+  useCallback
+} from "react";
 import RouteBoxer from "../vendor/RouteBoxer";
-import { RoutePointsContext } from "../context/route-points-context";
+import {
+  RoutePointsContext
+} from "../context/route-points-context";
+import {
+  PROXY
+} from "../services/api";
 // import { RouteBoxer } from "../vendor/RouteBoxer";
 
 const Map = props => {
-  const { routePoints, dispatchRoutePoints } = useContext(RoutePointsContext);
+  const {
+    routePoints,
+    dispatchRoutePoints
+  } = useContext(RoutePointsContext);
 
-  const { google } = window;
+  const {
+    google
+  } = window;
 
   const routeBoxer = new RouteBoxer();
 
-  let distance = 0.395;
+  let distance = 0.5;
   let boxpolys = null;
   let directions = null;
   let map = null;
@@ -47,7 +61,7 @@ const Map = props => {
     };
 
     const getBusStopInBox = async coordinates => {
-      const API = `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=AIzaSyCKD7oyCZr-KDECsd1TB1pIqBzu248rQAs&types=bus_station&input=bus&inputtype=textquery&fields=name,icon,type,geometry/viewport,place_id&locationbias=rectangle:${coordinates.southWest}|${coordinates.northEast}`;
+      const API = `${PROXY}/https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=AIzaSyCKD7oyCZr-KDECsd1TB1pIqBzu248rQAs&types=bus_station&input=bus&inputtype=textquery&fields=name,icon,type,geometry/viewport,place_id&locationbias=rectangle:${coordinates.southWest}|${coordinates.northEast}`;
 
       const res = await fetch(API, {
         mode: "cors"
@@ -59,7 +73,7 @@ const Map = props => {
     };
 
     // Make the directions request
-    window.directionService.route(request, function(result, status) {
+    window.directionService.route(request, function (result, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
 
@@ -70,11 +84,11 @@ const Map = props => {
         const processedBoxes = boxes.map((box, i) => {
           setTimeout(
             () =>
-              getBusStopInBox({
-                southWest: `${box.oa.g},${box.ka.g}`,
-                northEast: `${box.oa.h},${box.ka.h}`
-              }),
-            100 * i
+            getBusStopInBox({
+              southWest: `${box.oa.g},${box.ka.g}`,
+              northEast: `${box.oa.h},${box.ka.h}`
+            }),
+            50 * i
           );
         });
       } else {
@@ -113,7 +127,8 @@ const Map = props => {
 
   // console.log("mapOptions", mapOptions);
 
-  return <div id="main-map" className="map"></div>;
+  return <div id = "main-map"
+  className = "map" > < /div>;
 };
 
 export default Map;
