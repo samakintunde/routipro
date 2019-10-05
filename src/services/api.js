@@ -1,4 +1,4 @@
-const PROXY = "https://cors-anywhere.herokuapp.com";
+const PROXY = "http://localhost:3020";
 
 const PLACES_AUTOCOMPLETE_API = `${PROXY}/https://maps.googleapis.com/maps/api/place/autocomplete/json?language=en&components=country:ng&types=geocode&key=${process.env.REACT_APP_MAPS_API_KEY}`;
 
@@ -9,6 +9,7 @@ const PLACES_API = `${PROXY}/https://maps.googleapis.com/maps/api/place/findplac
 const DIRECTIONS_API = `${PROXY}/https://maps.googleapis.com/maps/api/directions/json?language=en&components=country:ng&key=${process.env.REACT_APP_MAPS_API_KEY}`;
 
 export {
+  PROXY,
   PLACES_API,
   PLACES_AUTOCOMPLETE_API,
   PLACES_NEARBY_API,
