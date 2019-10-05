@@ -13,13 +13,13 @@ const App = () => {
   return (
     <div className="grid-container full app">
       <Header title="Routipro" />
-      <main className="main">
-        <div className="grid-container">
+      <main className="main grid-x">
+        <div className="cell large-6 grid-container">
           <Map />
         </div>
-        <div className="grid-container">
-          <div className="grid-x">
-            <div className="cell medium-6">
+        <div className="cell large-6 grid-container">
+          <div className="grid-x align-center">
+            <div className="cell medium-10 large-6">
               <RouteForm></RouteForm>
             </div>
           </div>

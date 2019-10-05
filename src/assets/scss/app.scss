@@ -7,7 +7,7 @@
 
 // Grids (choose one)
 @include foundation-xy-grid-classes;
-// @include foundation-flex-classes;
+@include foundation-flex-classes;
 
 // BASE
 @import "./base/resets";
