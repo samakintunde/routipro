@@ -29,15 +29,8 @@ func main() {
 			return
 		}
 
-		if strings.Contains(resp.Header.Get("Content-Type"), "application/json") {
-			details, _ := ioutil.ReadAll(resp.Body)
-			//c.JSON(resp.StatusCode, string(details))
-			c.Data(resp.StatusCode, "application/json", details)
-			return
-		} else {
-			bodyContent, _ := ioutil.ReadAll(resp.Body)
-			c.Data(resp.StatusCode, "text/plain; charset=utf-8", bodyContent)
-		}
+		details, _ := ioutil.ReadAll(resp.Body)
+		c.Data(resp.StatusCode, resp.Header.Get("Content-Type"), details)
 	})
 	fmt.Println("Server Started")
 	r.Run(fmt.Sprintf("127.0.0.1:%s", PORT))
