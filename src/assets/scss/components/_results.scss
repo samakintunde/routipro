@@ -1,0 +1,13 @@
+.results {
+  position: absolute;
+  background-color: color(white);
+  right: 0;
+  height: calc(100vh - #{rem-calc(52)});
+  top: 0;
+  z-index: 2;
+  box-shadow: rem-calc(-8) 0 rem-calc(32) rgba($color: color(gray), $alpha: 0.5);
+  overflow-y: scroll;
+
+  .form {
+  }
+}

@@ -1,19 +1,20 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 
-import { Input } from "../components";
-import { RoutePointsContext } from "../context/route-points-context";
-import { PLACES_AUTOCOMPLETE_API, PLACES_API } from "../services/api";
-import { SET_ACTIVE_POINTS } from "../actions/types";
+import { AutoComplete, Button, Modal } from "antd";
+
+import { RouteContext } from "../context/route-context";
+import { PLACES_AUTOCOMPLETE_API } from "../services/api";
+import { setActivePoints } from "../actions/set-route-points";
 
 const RouteForm = props => {
-  const { routePoints, dispatchRoutePoints } = useContext(RoutePointsContext);
-  console.log(routePoints);
+  const { dispatchRoute } = useContext(RouteContext);
+
   const [form, setForm] = useState({
     origin: "",
     destination: ""
   });
-
+  const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
   /**
@@ -22,36 +23,29 @@ const RouteForm = props => {
    * */
   const fetchPlaceSuggestions = async input => {
     const res = await axios.get(`${PLACES_AUTOCOMPLETE_API}&input=${input}`);
-    setSuggestions(res.data.predictions);
-  };
-
-  /**
-   * * Gets the details of the place you're searching for
-   * @param {String} origin
-   * @param {String} destination
-   * */
-  const fetchPlace = async (origin, destination) => {
-    [origin, destination].forEach(async place => {
-      const res = await axios.get(
-        `${PLACES_API}&types=bus_station&inputtype=textquery&fields=name,icon,type,geometry/viewport,place_id&input=${place}`
-      );
-      console.log(place, res);
-    });
+    try {
+      const data = res.data.predictions.map(prediction => {
+        return prediction.description;
+      });
+      setSuggestions(data);
+    } catch (error) {
+      setSuggestions([]);
+    }
   };
 
   /**
    * * Handles the value of the input as a controlled component
    * @param {EventListenerObject} e
    * */
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-
+  const handleInputChange = (name, value) => {
     setForm({
       ...form,
       [name]: value
     });
 
-    fetchPlaceSuggestions(value);
+    setTimeout(() => {
+      fetchPlaceSuggestions(value);
+    }, 100);
   };
 
   /**
@@ -61,60 +55,55 @@ const RouteForm = props => {
   const handleFormSubmit = e => {
     e.preventDefault();
     const { origin, destination } = form;
-    fetchPlace(origin, destination);
-    dispatchRoutePoints({
-      type: SET_ACTIVE_POINTS,
-      payload: {
-        origin,
-        destination
-      }
-    });
-    console.log("origin", routePoints);
-    // route();
+    if (!origin || !destination) {
+      return Modal.error({
+        title: "Either the origin or the destination field is empty."
+      });
+    }
+    setLoading(true);
+    setActivePoints(dispatchRoute, { origin, destination });
+    setTimeout(() => {
+      setLoading(false);
+    }, 2500);
   };
 
-  /**
-   * Handles the click on an autocomplete suggestion. Sets it to state.
-   * @param suggestion - A suggestion event
-   */
-  const handleSuggestionClick = (name, suggestion) => {
-    setForm({
-      ...form,
-      [name]: suggestion
-    });
-    setSuggestions([]);
-  };
+  // if (route.stops.length && !loading) {
+  //   return <Redirect to="/results" push />;
+  // }
 
   return (
-    <form className="form" onSubmit={handleFormSubmit}>
-      <div className="form-group">
-        <label htmlFor="start-point">Start</label>
-        <Input
-          id="start-point"
-          type="text"
-          name="origin"
+    <form className="grid-x grid-margin-x form" onSubmit={handleFormSubmit}>
+      <div className="cell large-6 form-group">
+        <label htmlFor="start-point">Origin</label>
+        <AutoComplete
+          allowClear={true}
+          id="origin"
           value={form.origin}
-          handleInput={handleInputChange}
-          handleSuggestion={handleSuggestionClick}
-          suggestions={suggestions}
-        />
+          dataSource={suggestions}
+          onChange={val => handleInputChange("origin", val)}
+        ></AutoComplete>
       </div>
-      <div className="form-group">
-        <label htmlFor="end-point">End</label>
-        <Input
-          id="end-point"
-          type="text"
-          name="destination"
+      <div className="cell large-6 form-group">
+        <label htmlFor="end-point">Destination</label>
+        <AutoComplete
+          allowClear={true}
+          id="destination"
           value={form.destination}
-          handleInput={handleInputChange}
-          handleSuggestion={handleSuggestionClick}
-          suggestions={suggestions}
-        />
+          dataSource={suggestions}
+          onChange={val => handleInputChange("destination", val)}
+        ></AutoComplete>
       </div>
-      <div className="form-group">
-        <button className="form-action button button--primary" type="submit">
-          Get Route Details
-        </button>
+      <div className="cell large-12 align-center">
+        <div className="form-group text-center">
+          <Button
+            className="button--primary"
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+          >
+            Get Route Details
+          </Button>
+        </div>
       </div>
     </form>
   );

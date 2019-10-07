@@ -333,8 +333,7 @@ module.exports = function(webpackEnv) {
               loader: require.resolve("eslint-loader")
             }
           ],
-          include: paths.appSrc,
-          exclude: path.join(paths.appSrc, "/vendor/RouteBoxer.js")
+          include: paths.appSrc
         },
         {
           // "oneOf" will traverse all following loaders until one will

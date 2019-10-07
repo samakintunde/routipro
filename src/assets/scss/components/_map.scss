@@ -1,6 +1,11 @@
 .map {
-  height: rem-calc(400);
-  margin-top: rem-calc(16);
-  margin-bottom: rem-calc(16);
+  height: 100%;
   border-radius: rem-calc(4);
+
+  &-container {
+    height: calc(100vh - #{rem-calc(52)});
+    left: 0;
+    position: absolute;
+    overflow: hidden;
+  }
 }

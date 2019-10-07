@@ -1,43 +1,27 @@
-import React, {
-  useEffect,
-  useContext,
-  useCallback
-} from "react";
-import RouteBoxer from "../vendor/RouteBoxer";
-import {
-  RoutePointsContext
-} from "../context/route-points-context";
-import {
-  PROXY
-} from "../services/api";
-// import { RouteBoxer } from "../vendor/RouteBoxer";
+import React, { useEffect, useContext } from "react";
+import axios from "axios";
+
+import { RouteContext } from "../context/route-context";
+import { addBusStops } from "../actions/set-route-stops";
+import { PLACES_API } from "../services/api";
+import { sortBusStops } from "../actions/sort-bus-stops";
 
 const Map = props => {
-  const {
-    routePoints,
-    dispatchRoutePoints
-  } = useContext(RoutePointsContext);
+  const { route, dispatchRoute } = useContext(RouteContext);
+  const { mapOptions } = props;
 
-  const {
-    google
-  } = window;
+  const { google, RouteBoxer } = window;
 
   const routeBoxer = new RouteBoxer();
 
-  let distance = 0.5;
+  let distance = 0.01;
   let boxpolys = null;
-  let directions = null;
   let map = null;
+
   /**
    * Initializes the Google Maps Client and renders a map
    */
   const init = () => {
-    const mapOptions = {
-      center: new google.maps.LatLng(6.5244, 3.3792),
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      zoom: 8
-    };
-
     map = new google.maps.Map(document.getElementById("main-map"), mapOptions);
 
     window.directionService = new google.maps.DirectionsService();
@@ -46,7 +30,7 @@ const Map = props => {
     });
   };
 
-  const route = () => {
+  const makeRoute = () => {
     // e.preventDefault();
     // Clear any previous route boxes from the map
     clearBoxes();
@@ -55,25 +39,25 @@ const Map = props => {
     distance = distance * 1.609344;
 
     var request = {
-      origin: routePoints.origin,
-      destination: routePoints.destination,
+      origin: route.origin,
+      destination: route.destination,
       travelMode: google.maps.DirectionsTravelMode.DRIVING
     };
 
-    const getBusStopInBox = async coordinates => {
-      const API = `${PROXY}/https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=AIzaSyCKD7oyCZr-KDECsd1TB1pIqBzu248rQAs&types=bus_station&input=bus&inputtype=textquery&fields=name,icon,type,geometry/viewport,place_id&locationbias=rectangle:${coordinates.southWest}|${coordinates.northEast}`;
+    const getBusStopInBox = async (coordinates, origin) => {
+      const API = `${PLACES_API}&types=bus_station&input=bus&inputtype=textquery&fields=name,icon,type,geometry/location,place_id&locationbias=rectangle:${coordinates.southWest}|${coordinates.northEast}`;
 
-      const res = await fetch(API, {
-        mode: "cors"
-      });
-      const data = await res.json();
-      data.candidates.map(candidate => {
-        console.log(candidate.name);
-      });
+      try {
+        const res = await axios.get(API);
+        addBusStops(dispatchRoute, res.data.candidates);
+        sortBusStops(dispatchRoute, origin);
+      } catch (error) {
+        throw new Error(error);
+      }
     };
 
     // Make the directions request
-    window.directionService.route(request, function (result, status) {
+    window.directionService.route(request, async function(result, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
 
@@ -81,14 +65,21 @@ const Map = props => {
         var path = result.routes[0].overview_path;
         var boxes = routeBoxer.box(path, distance);
         drawBoxes(boxes);
-        const processedBoxes = boxes.map((box, i) => {
-          setTimeout(
-            () =>
-            getBusStopInBox({
+
+        const origin = {
+          lat: result.routes[0].legs[0].start_location.lat(),
+          lon: result.routes[0].legs[0].start_location.lng()
+        };
+
+        // const sortedBoxes = sortBusStops(boxes, boxes[0]);
+
+        boxes.map((box, i) => {
+          getBusStopInBox(
+            {
               southWest: `${box.oa.g},${box.ka.g}`,
               northEast: `${box.oa.h},${box.ka.h}`
-            }),
-            50 * i
+            },
+            origin
           );
         });
       } else {
@@ -122,13 +113,11 @@ const Map = props => {
     boxpolys = null;
   };
 
-  useEffect(init, [google]);
-  useEffect(route, [routePoints]);
+  useEffect(init, []);
 
-  // console.log("mapOptions", mapOptions);
+  useEffect(makeRoute, [route.origin, route.destination]);
 
-  return <div id = "main-map"
-  className = "map" > < /div>;
+  return <div id="main-map" className="map"></div>;
 };
 
 export default Map;

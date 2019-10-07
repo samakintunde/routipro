@@ -2,6 +2,8 @@
 @import "./settings";
 @import "../../../node_modules/foundation-sites/scss/foundation.scss";
 
+@import "./vendor/antd";
+
 // TYPOGRAPHY
 @include foundation-typography;
 
@@ -19,7 +21,13 @@
 @import "./components/header";
 @import "./components/input";
 @import "./components/map";
+@import "./components/card";
+@import "./components/results";
 
 // UTILS
 @import "./utils/text";
 @import "./utils/color";
+@import "./utils/spacing";
+
+// PAGES
+@import "./templates/page";

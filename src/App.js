@@ -1,31 +1,23 @@
 import React from "react";
-import { RouteForm } from "./containers/index";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { Header, Map } from "./components/index";
+import { Header } from "./components";
+import { Home } from "./screens";
 
 import "./assets/scss/app.scss";
 
 const App = () => {
-  // const { activePoints, dispatchActivePoints } = useContext(
-  //   ActivePointsContext
-  // );
-
   return (
-    <div className="grid-container full app">
-      <Header title="Routipro" />
-      <main className="main grid-x">
-        <div className="cell large-6 grid-container">
-          <Map />
-        </div>
-        <div className="cell large-6 grid-container">
-          <div className="grid-x align-center">
-            <div className="cell medium-10 large-6">
-              <RouteForm></RouteForm>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+    <Router>
+      <div className="grid-container full app">
+        <Header title="Routipro" />
+        <Switch>
+          <Route path="/" exact>
+            <Home />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 };
 

@@ -1,0 +1,17 @@
+@each $padding in (1, 2, 3) {
+  .padding-#{$padding} {
+    padding: #{$padding}rem;
+  }
+  .padding-top-#{$padding} {
+    padding-top: #{$padding}rem;
+  }
+  .padding-bottom-#{$padding} {
+    padding-bottom: #{$padding}rem;
+  }
+  .padding-right-#{$padding} {
+    padding-bottom: #{$padding}rem;
+  }
+  .padding-left-#{$padding} {
+    padding-bottom: #{$padding}rem;
+  }
+}

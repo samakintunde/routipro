@@ -1,8 +1,8 @@
 import React from "react";
-import { RoutePointsProvider } from "./route-points-context";
+import { RouteProvider } from "./route-context";
 
 const Provider = ({ children }) => {
-  return <RoutePointsProvider>{children}</RoutePointsProvider>;
+  return <RouteProvider>{children}</RouteProvider>;
 };
 
 export default Provider;
