@@ -1,10 +1,8 @@
-import React from "react";
-import { Steps } from "antd";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 import { RouteForm } from "./index";
-
-const { Step } = Steps;
+import { BusStop } from "../components";
 
 const Results = props => {
   const { route } = props;
@@ -15,22 +13,10 @@ const Results = props => {
         <RouteForm />
       </div>
       <div className="cell auto grid-x padding-top-1 padding-bottom-1">
-        <div className="cell">
-          <Steps progressDot current={1} direction="vertical" className="steps">
-            {route.stops.map((stop, i) => {
-              const {
-                name,
-                geometry: { location }
-              } = stop;
-              return (
-                <Step
-                  key={i}
-                  title={name}
-                  description={`Lng: ${location.lng} Lat: ${location.lat}`}
-                />
-              );
-            })}
-          </Steps>
+        <div className="cell grid-y steps">
+          {route.stops.map((stop, i) => {
+            return <BusStop key={i} index={i} stop={stop} />;
+          })}
         </div>
       </div>
     </motion.div>

@@ -5,6 +5,7 @@ import { RouteContext } from "../context/route-context";
 import { addBusStops } from "../actions/set-route-stops";
 import { PLACES_API } from "../services/api";
 import { sortBusStops } from "../actions/sort-bus-stops";
+import BusStop from "../models/bus-stop";
 
 const Map = props => {
   const { route, dispatchRoute } = useContext(RouteContext);
@@ -49,8 +50,11 @@ const Map = props => {
 
       try {
         const res = await axios.get(API);
-        addBusStops(dispatchRoute, res.data.candidates);
-        sortBusStops(dispatchRoute, origin);
+        // console.log("bus stop", new BusStop(res.data.candidates[0], origin));
+        addBusStops(dispatchRoute, new BusStop(res.data.candidates[0], origin));
+        // setTimeout(() => {
+        //   sortBusStops(dispatchRoute, origin);
+        // }, 16);
       } catch (error) {
         throw new Error(error);
       }

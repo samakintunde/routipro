@@ -72,7 +72,7 @@ const RouteForm = props => {
   // }
 
   return (
-    <form className="grid-x grid-margin-x form" onSubmit={handleFormSubmit}>
+    <form className="cell grid-x form" onSubmit={handleFormSubmit}>
       <div className="cell large-6 form-group">
         <label htmlFor="start-point">Origin</label>
         <AutoComplete

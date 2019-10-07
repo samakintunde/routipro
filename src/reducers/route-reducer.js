@@ -19,7 +19,7 @@ const routeReducer = (state = initialState, action) => {
     case SET_ROUTE_POINTS:
       return { ...state, ...payload };
     case ADD_ROUTE_STOPS:
-      let stops = [...state.stops, ...payload];
+      let stops = [...state.stops, payload];
       stops = makeObjectsOfArrayUnique(stops, "name");
       return { ...state, stops };
     case SORT_BUS_STOPS:

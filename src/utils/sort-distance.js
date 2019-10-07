@@ -9,7 +9,7 @@ const getDistance = (origin, point, unit) => {
   const lon1 = origin.lon;
 
   const lat2 = point.lat;
-  const lon2 = point.lon;
+  const lon2 = point.lng;
 
   if (lat1 === lat2 && lon1 === lon2) {
     return 0;
@@ -43,22 +43,10 @@ const getDistance = (origin, point, unit) => {
  * @param {Object} origin The starting point for our measurements
  * @param {Unit} unit The unit of the distance being measured
  */
-const sortBusStops = (locations, origin) => {
-  locations.sort(function(a, b) {
-    const aDistance = getDistance(origin, a, "K");
-    const bDistance = getDistance(origin, b, "K");
-    // console.log("distance", aDistance);
-    // console.log("sort", aDistance - bDistance);
-
-    return aDistance - bDistance;
+const sortBusStops = locations => {
+  return locations.sort(function(a, b) {
+    return a.distanceFromOrigin - b.distanceFromOrigin;
   });
-  console.log("locations", locations);
-  return locations;
-
-  // locations.sort(location => {
-  //   const distance = getDistance(origin, location.geometry.location, unit);
-
-  // })
 };
 
-export { sortBusStops };
+export { getDistance, sortBusStops };

@@ -24,7 +24,7 @@ const Home = () => {
       {!route.stops.length && (
         <div className="cell align-self-bottom large-6 grid-container padding-bottom-1 form-container">
           <div className="grid-x align-center card">
-            <div className="cell large-11">
+            <div className="cell large-12">
               <RouteForm />
             </div>
           </div>
