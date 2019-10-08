@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 // import { Drawer } from "antd";
 
-import { Map } from "../components/index";
+import { RouteMap } from "../containers/";
 import { RouteForm, Results } from "../containers/index";
 import { RouteContext } from "../context/route-context";
 
@@ -19,7 +19,7 @@ const Home = () => {
   return (
     <main className="main grid-x main--home">
       <div className="cell small-12 map-container">
-        <Map mapOptions={mapOptions} />
+        <RouteMap mapOptions={mapOptions} />
       </div>
       {!route.stops.length && (
         <div className="cell align-self-bottom large-6 grid-container padding-bottom-1 form-container">
@@ -30,7 +30,9 @@ const Home = () => {
           </div>
         </div>
       )}
-      {route.stops.length && <Results route={route} />}
+      {/* {route.stops.length &&  */}
+      <Results route={route} />
+      // }
     </main>
   );
 };

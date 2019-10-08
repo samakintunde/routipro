@@ -5,11 +5,11 @@ import { ADD_ROUTE_STOPS } from "../constants/action-types";
  * @param {Function} dispatch The dispatch function to update the state.
  * @param {Object} stops An array containing the list of bus stops.
  */
-const addBusStops = (dispatch, stop) => {
+const addBusStop = (dispatch, stop) => {
   return dispatch({
     type: ADD_ROUTE_STOPS,
     payload: stop
   });
 };
 
-export { addBusStops };
+export { addBusStop };

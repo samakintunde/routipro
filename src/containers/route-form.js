@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+// import {  } from "lodash";
 import axios from "axios";
 
 import { AutoComplete, Button, Modal } from "antd";
@@ -43,9 +44,9 @@ const RouteForm = props => {
       [name]: value
     });
 
-    setTimeout(() => {
-      fetchPlaceSuggestions(value);
-    }, 100);
+    // setTimeout(() => {
+    //   fetchPlaceSuggestions(value);
+    // }, 100);
   };
 
   /**

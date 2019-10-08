@@ -17,18 +17,4 @@ body {
       z-index: 1;
     }
   }
-
-  .results {
-    overflow-y: scroll;
-    .ant-steps-item-content {
-      width: 90%;
-    }
-
-    .form {
-      .form-group,
-      :last-child {
-        width: 100%;
-      }
-    }
-  }
 }

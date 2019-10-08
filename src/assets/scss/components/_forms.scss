@@ -1,6 +1,10 @@
 .form {
   .form-group {
-    padding: rem-calc(12);
+    padding: rem-calc(12) rem-calc(0);
+  }
+
+  .form-group > div:not(:last-child) {
+    padding-right: rem-calc(12);
   }
 
   label {

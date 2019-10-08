@@ -8,6 +8,28 @@
   box-shadow: rem-calc(-8) 0 rem-calc(32) rgba($color: color(gray), $alpha: 0.5);
   overflow-y: scroll;
 
-  .form {
+  .form:not(.results__input-container) {
+    .form-group,
+    :last-child {
+      width: 100%;
+    }
+  }
+
+  &__input-container {
+    background-color: color(white);
+    position: fixed;
+
+    right: 0;
+    padding: rem-calc(16) rem-calc(32);
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 rem-calc(-4) rem-calc(24)
+      rgba($color: color(gray), $alpha: 0.15);
+  }
+
+  .fab-container {
+    position: absolute;
+    right: rem-calc(32);
+    bottom: rem-calc(32);
   }
 }

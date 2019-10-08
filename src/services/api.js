@@ -8,10 +8,13 @@ const PLACES_API = `${PROXY}/https://maps.googleapis.com/maps/api/place/findplac
 
 const DIRECTIONS_API = `${PROXY}/https://maps.googleapis.com/maps/api/directions/json?language=en&components=country:ng&key=${process.env.REACT_APP_MAPS_API_KEY}`;
 
+const STATIC_MAP = `https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=960x320&maptype=roadmap&key=${process.env.REACT_APP_MAPS_API_KEY}`;
+
 export {
   PROXY,
   PLACES_API,
   PLACES_AUTOCOMPLETE_API,
   PLACES_NEARBY_API,
-  DIRECTIONS_API
+  DIRECTIONS_API,
+  STATIC_MAP
 };
