@@ -1,19 +1,32 @@
 .form {
   .form-group {
-    padding: rem-calc(12) rem-calc(0);
-  }
-
-  .form-group > div:not(:last-child) {
-    padding-right: rem-calc(12);
+    padding: rem-calc(8) rem-calc(0);
   }
 
   label {
-    margin: rem-calc(12);
-    font-size: rem-calc(16);
-    margin-bottom: rem-calc(8);
+    margin-left: rem-calc(9);
   }
 
-  .form-action {
+  // .ant-input
+  label + input {
+    display: block;
+    width: 100%;
+    margin-top: rem-calc(4);
+    padding: rem-calc(4) rem-calc(8);
+    border-radius: rem-calc(4);
+    border: rem-calc(1) solid color(gray-lighter);
+    transition: 0.3s ease-in-out;
+    background-color: rgba(color(gray-lightest), 0.5);
+
+    &:not(:focus) {
+      border: rem-calc(1) solid color(gray-lightest);
+      color: color(gray);
+    }
+  }
+
+  // INPUT
+  .ant-input.ant-select-search__field .form-action,
+  .ant-input-number {
     width: 100%;
   }
 }

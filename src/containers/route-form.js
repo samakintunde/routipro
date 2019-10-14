@@ -1,52 +1,75 @@
-import React, { useState, useContext } from "react";
-// import {  } from "lodash";
-import axios from "axios";
-
+import React, { useEffect, useState, useContext } from "react";
 import { AutoComplete, Button, Modal } from "antd";
 
 import { RouteContext } from "../context/route-context";
-import { PLACES_AUTOCOMPLETE_API } from "../services/api";
 import { setActivePoints } from "../actions/set-route-points";
+import { debounce } from "../utils/debounce";
 
-const RouteForm = props => {
+const RouteForm = () => {
   const { dispatchRoute } = useContext(RouteContext);
 
   const [form, setForm] = useState({
-    origin: "",
-    destination: ""
+    origin: {
+      name: "",
+      coordinates: {}
+    },
+    destination: {
+      name: "",
+      coordinates: {}
+    }
   });
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
+  const { google } = window;
+
+  const {
+    AutocompleteService,
+    AutocompleteSessionToken,
+    PlacesService,
+    PlacesServiceStatus
+  } = google.maps.places;
+  const autocompleteService = new AutocompleteService();
+  const sessionToken = new AutocompleteSessionToken();
+
   /**
    * * Gets the details of the place you're searching for
-   * @param {String} input The location being typed by the user
+   * @param {Object} request The location being typed by the user
    * */
-  const fetchPlaceSuggestions = async input => {
-    const res = await axios.get(`${PLACES_AUTOCOMPLETE_API}&input=${input}`);
-    try {
-      const data = res.data.predictions.map(prediction => {
-        return prediction.description;
-      });
-      setSuggestions(data);
-    } catch (error) {
-      setSuggestions([]);
-    }
+  const fetchPlaceSuggestions = request => {
+    autocompleteService.getPlacePredictions(request, (predictions, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        const refinedPredictions = Array.from(
+          predictions,
+          prediction => prediction.description
+        );
+        setSuggestions(refinedPredictions);
+      }
+    });
   };
 
   /**
    * * Handles the value of the input as a controlled component
-   * @param {EventListenerObject} e
+   * @param {String} name
+   * @param {String} value The value of the input field
    * */
   const handleInputChange = (name, value) => {
     setForm({
       ...form,
-      [name]: value
+      [name]: {
+        ...form[name],
+        name: value
+      }
     });
 
-    // setTimeout(() => {
-    //   fetchPlaceSuggestions(value);
-    // }, 100);
+    const request = {
+      input: value,
+      componentRestrictions: { country: "ng" },
+      token: sessionToken,
+      types: ["geocode", "establishment"]
+    };
+
+    debounce(fetchPlaceSuggestions(request), 500);
   };
 
   /**
@@ -56,56 +79,84 @@ const RouteForm = props => {
   const handleFormSubmit = e => {
     e.preventDefault();
     const { origin, destination } = form;
-    if (!origin || !destination) {
+    const placesService = new PlacesService(
+      document.querySelector(".dummy-map")
+    );
+
+    // Handle Empty fields in form error
+    if (!origin.name || !destination.name) {
       return Modal.error({
         title: "Either the origin or the destination field is empty."
       });
     }
+
     setLoading(true);
-    setActivePoints(dispatchRoute, { origin, destination });
-    setTimeout(() => {
-      setLoading(false);
-    }, 2500);
+
+    [origin, destination].forEach((query, i) => {
+      const field = i === 0 ? "origin" : "destination";
+
+      placesService.findPlaceFromQuery(
+        {
+          query: query.name,
+          fields: ["geometry.location"]
+        },
+        (results, status) => {
+          if (status === PlacesServiceStatus.OK) {
+            let newRoutePoints = form;
+
+            newRoutePoints[field] = {
+              name: query.name,
+              coordinates: {
+                lat: results[0].geometry.location.lat(),
+                lng: results[0].geometry.location.lng()
+              }
+            };
+
+            setForm(newRoutePoints);
+            setActivePoints(dispatchRoute, form);
+          }
+        }
+      );
+    });
+    setLoading(false);
   };
 
-  // if (route.stops.length && !loading) {
-  //   return <Redirect to="/results" push />;
-  // }
-
   return (
-    <form className="cell grid-x form" onSubmit={handleFormSubmit}>
-      <div className="cell large-6 form-group">
+    <form className="cell grid-y form" onSubmit={handleFormSubmit}>
+      <div className="cell form-group">
         <label htmlFor="start-point">Origin</label>
         <AutoComplete
           allowClear={true}
-          id="origin"
-          value={form.origin}
           dataSource={suggestions}
+          value={form.origin.name}
+          id="origin"
           onChange={val => handleInputChange("origin", val)}
         ></AutoComplete>
       </div>
-      <div className="cell large-6 form-group">
+      <div className="cell form-group">
         <label htmlFor="end-point">Destination</label>
         <AutoComplete
           allowClear={true}
           id="destination"
-          value={form.destination}
+          value={form.destination.name}
           dataSource={suggestions}
           onChange={val => handleInputChange("destination", val)}
         ></AutoComplete>
       </div>
-      <div className="cell large-12 align-center">
+      <div className="cell align-center">
         <div className="form-group text-center">
           <Button
             className="button--primary"
             type="primary"
             htmlType="submit"
             loading={loading}
+            block
           >
             Get Route Details
           </Button>
         </div>
       </div>
+      <div className="dummy-map" style={{ display: "none" }}></div>
     </form>
   );
 };

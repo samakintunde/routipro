@@ -1,5 +1,4 @@
 import React from "react";
-import { STATIC_MAP } from "../services/api";
 
 const Map = props => {
   const { index, active, stop } = props;
@@ -8,9 +7,7 @@ const Map = props => {
 
   let map = null;
 
-  // const mapImage = `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}`;
-  const mapImage =
-    "https://maps.googleapis.com/maps/api/staticmap?zoom=15&size=960x320&maptype=roadmap&key=AIzaSyDWplqBHPUmNu-Z28uZTxUVHPpAnM9BrPM&center=6.437283,3.451255";
+  const mapImage = `https://maps.googleapis.com/maps/api/staticmap?zoom=18&size=960x320&maptype=roadmap&key=AIzaSyDWplqBHPUmNu-Z28uZTxUVHPpAnM9BrPM&center=${coordinates.lat},${coordinates.lng}`;
 
   const mapOptions = {
     center: new google.maps.LatLng(coordinates.lat, coordinates.lng),
@@ -37,19 +34,23 @@ const Map = props => {
     setTimeout(() => {
       initMap(mapOptions);
     });
+
     return (
-      <div className="cell step__map-container">
+      <div className="cell bus-stop__map-container">
         <div
-          className={`step__map "step__map--visible`}
+          className="bus-stop__map bus-stop__map--visible"
           id={`map-${index}`}
         ></div>
       </div>
     );
   } else {
-    console.log("image", mapImage);
     return (
-      <div className="cell step__map-container">
-        <img className={`step__map step__map--visible`} src={mapImage} alt="" />
+      <div className="cell bus-stop__map-container">
+        <img
+          className="bus-stop__map bus-stop__map--visible"
+          src={mapImage}
+          alt=""
+        />
       </div>
     );
   }

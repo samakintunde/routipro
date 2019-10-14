@@ -6,17 +6,17 @@
  */
 const getDistance = (origin, point, unit) => {
   const lat1 = origin.lat;
-  const lon1 = origin.lon;
+  const lng1 = origin.lng;
 
   const lat2 = point.lat;
-  const lon2 = point.lng;
+  const lng2 = point.lng;
 
-  if (lat1 === lat2 && lon1 === lon2) {
+  if (lat1 === lat2 && lng1 === lng2) {
     return 0;
   } else {
     var radlat1 = (Math.PI * lat1) / 180;
     var radlat2 = (Math.PI * lat2) / 180;
-    var theta = lon1 - lon2;
+    var theta = lng1 - lng2;
     var radtheta = (Math.PI * theta) / 180;
     var dist =
       Math.sin(radlat1) * Math.sin(radlat2) +
@@ -43,9 +43,9 @@ const getDistance = (origin, point, unit) => {
  * @param {Object} origin The starting point for our measurements
  * @param {Unit} unit The unit of the distance being measured
  */
-const sortBusStops = locations => {
+const sortBusStops = (locations, property) => {
   return locations.sort(function(a, b) {
-    return a.distanceFromOrigin - b.distanceFromOrigin;
+    return a[property] - b[property];
   });
 };
 
