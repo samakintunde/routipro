@@ -1,16 +1,24 @@
-import React, { useEffect, useContext } from "react";
-import axios from "axios";
+import React, { useEffect, useContext, useRef } from "react";
 
 import { RouteContext } from "../context/route-context";
 import { addBusStop } from "../actions/set-route-stops";
-import { PLACES_API } from "../services/api";
-import BusStop from "../models/bus-stop";
+import BusStopModel from "../models/bus-stop";
 
-const RouteMap = props => {
+const RouteMap = () => {
   const { route, dispatchRoute } = useContext(RouteContext);
-  const { mapOptions } = props;
+
+  const mapEl = useRef(null);
 
   const { google, RouteBoxer } = window;
+  const {
+    DirectionsService,
+    DirectionsRenderer,
+    LatLng,
+    LatLngBounds,
+    Map,
+    MapTypeId
+  } = google.maps;
+  const { PlacesService } = google.maps.places;
 
   const routeBoxer = new RouteBoxer();
 
@@ -18,60 +26,23 @@ const RouteMap = props => {
   let boxpolys = null;
   let map = null;
 
+  const mapOptions = {
+    center: new LatLng(6.5244, 3.3792),
+    mapTypeId: MapTypeId.ROADMAP,
+    zoom: 8
+  };
+
   /**
    * Initializes the Google Maps Client and renders a map
    */
   const init = () => {
-    map = new google.maps.Map(document.getElementById("main-map"), mapOptions);
+    map = new Map(mapEl.current, mapOptions);
 
-    window.directionService = new google.maps.DirectionsService();
-    window.directionsRenderer = new google.maps.DirectionsRenderer({
+    window.directionsService = new DirectionsService();
+    window.directionsRenderer = new DirectionsRenderer({
       map: map
     });
-    window.placeService = new google.maps.places.PlacesService(map);
-    window.google.LatLngBounds = google.maps.LatLngBounds;
-    window.google.LatLng = google.maps.LatLng;
-
-    // let service = new google.maps.places.PlacesService(map);
-
-    // console.log(
-    //   "Coords",
-    //   new google.maps.LatLngBounds(
-    //     { lat: -33.8665433, lng: 151.1956316 },
-    //     { lat: 6.4349966, lng: 3.4550429 }
-    //   )
-    // );
-
-    // const busStopRequest = {
-    //   // location: [
-    //   //   // { lat: 6.4349966, lng: 3.4550429 },
-    //   //   // { lat: 6.4679558, lng: 3.5615414 }
-    //   //   new google.maps.LatLng(6.4679558, 3.5615414),
-    //   //   new google.maps.LatLng(6.4679558, 3.5615414)
-    //   // ],
-    //   bounds: new google.maps.LatLngBounds(
-    //     { lat: 6.4679558, lng: 3.5615414 },
-    //     { lat: 6.4349966, lng: 3.4550429 }
-    //   ),
-    //   // bounds: [{ lat: -34, lng: 151 }, { lat: -32, lng: 160 }],
-    //   // location: new google.maps.LatLngBounds(
-    //   //   { lat: -33.8665433, lng: 151.1956316 },
-    //   //   { lat: 6.4349966, lng: 3.4550429 }
-    //   // ),
-    //   // location: new google.maps.LatLng(6.4679558, 3.5615414),
-    //   // radius: "50000",
-    //   type: "bus_station",
-    //   // strictBounds: true,
-    //   keyword: "bus stop"
-    // };
-
-    // console.log("Nearby Search", window.placeService.nearbySearch);
-
-    // window.placeService.nearbySearch(busStopRequest, function(results, status) {
-    //   console.log("sdk results", results, status);
-    //   if (status === google.maps.places.PlacesServiceStatus.OK) {
-    //   }
-    // });
+    window.placesService = new PlacesService(map);
   };
 
   const makeRoute = route => {
@@ -82,63 +53,42 @@ const RouteMap = props => {
     distance = distance * 1.609344;
 
     var request = {
-      origin: route.origin,
-      destination: route.destination,
+      origin: route.origin.name,
+      destination: route.destination.name,
       travelMode: google.maps.DirectionsTravelMode.DRIVING
     };
 
-    const getBusStopInBox = async (coordinates, origin) => {
-      // const API = `${PLACES_API}&input=bus&inputtype=textquery&fields=name,icon,type,geometry/location,place_id&locationbias=rectangle:${coordinates.southWest}|${coordinates.northEast}`;
-      // const placeService = new google.maps.places.PlacesService(map);
-
-      console.log(
-        "coordinates",
-        // new google.maps.LatLng(
-        coordinates.southWest.lat,
-        coordinates.southWest.lng,
-        coordinates.northEast.lat,
-        coordinates.northEast.lng
-        // )
-      );
-
-      const busStopRequest = {
-        bounds: new window.google.LatLngBounds(
-          { lat: coordinates.southWest.lat, lng: coordinates.southWest.lng },
-          { lat: coordinates.northEast.lat, lng: coordinates.northEast.lng }
+    const getBusStopInBox = async coordinates => {
+      const request = {
+        bounds: new LatLngBounds(
+          new LatLng(coordinates.southWest.lat(), coordinates.southWest.lng()),
+          new LatLng(coordinates.northEast.lat(), coordinates.northEast.lng())
         ),
-        //   location: new google.maps.LatLng(-33.8665433, 151.1956316),
-        // location: new google.maps.LatLng(-33.8665433, 151.1956316),
-        // radius: "500",
-        type: ["bus_station"]
+        types: ["bus_station"]
       };
 
-      console.log("Nearby Search", window.placeService.nearbySearch);
-
-      window.placeService.nearbySearch(busStopRequest, function(
-        results,
-        status
-      ) {
-        console.log("sdk results", results);
+      window.placesService.nearbySearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
+          results.forEach(result => {
+            const busStop = BusStopModel.fromJSON(
+              result,
+              route.origin.coordinates
+            );
+            addBusStop(dispatchRoute, busStop);
+          });
         }
       });
-
-      // try {
-      //   const res = await axios.get(API);
-      //   addBusStop(dispatchRoute, new BusStop(res.data.candidates[0], origin));
-      // } catch (error) {
-      //   throw new Error(error);
-      // }
     };
 
     // Make the directions request
-    window.directionService.route(request, async function(result, status) {
+    window.directionsService.route(request, async function(result, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
 
         // Box around the overview path of the first route
         var path = result.routes[0].overview_path;
         var boxes = routeBoxer.box(path, distance);
+
         drawBoxes(boxes);
 
         const origin = {
@@ -146,18 +96,10 @@ const RouteMap = props => {
           lon: result.routes[0].legs[0].start_location.lng()
         };
 
-        // const sortedBoxes = sortBusStops(boxes, boxes[0]);
-
-        boxes.map((box, i) => {
+        boxes.forEach((box, i) => {
           const coordinates = {
-            southWest: {
-              lng: box.oa.g,
-              lat: box.ka.g
-            },
-            northEast: {
-              lng: box.oa.h,
-              lat: box.ka.h
-            }
+            southWest: box.getSouthWest(),
+            northEast: box.getNorthEast()
           };
           getBusStopInBox(coordinates, origin);
         });
@@ -196,7 +138,7 @@ const RouteMap = props => {
 
   useEffect(() => makeRoute(route), [route.origin, route.destination]);
 
-  return <div id="main-map" className="map"></div>;
+  return <div ref={mapEl} id="main-map" className="map"></div>;
 };
 
 export default RouteMap;

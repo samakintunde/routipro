@@ -1,0 +1,53 @@
+.bus-stops {
+  // padding-left: rem-calc(8);
+  padding-right: rem-calc(16);
+
+  .bus-stop {
+    margin-bottom: rem-calc(16);
+    padding: rem-calc(8);
+    box-shadow: $shadow--sm;
+    border: rem-calc(1) solid color(gray-lightest);
+    border-radius: rem-calc(8);
+    transition: 0.3s ease-in-out;
+
+    &:hover {
+      border-color: color(gray-lighter);
+      // box-shadow: rem-calc(0) rem-calc(4) rem-calc(4) color(gray-lightest);
+      box-shadow: none;
+    }
+
+    &__map-container {
+      cursor: pointer;
+      margin-top: rem-calc(8);
+      margin-bottom: rem-calc(8);
+
+      > img {
+        width: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &__map {
+      height: rem-calc(0);
+      transition: 0.3s ease-in;
+      overflow: hidden;
+
+      &--visible {
+        height: rem-calc(108);
+      }
+    }
+
+    &__close-btn {
+      cursor: pointer;
+      transition: 0.3s ease-in-out;
+
+      &:hover {
+        color: color(accent-1);
+      }
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}

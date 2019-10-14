@@ -5,6 +5,10 @@
   font-weight: bold;
   border-radius: rem-calc(4);
   transition: 0.3s ease-in-out;
+  outline: none;
+  &.ant-btn-primary {
+    border: none;
+  }
 
   @include breakpoint(large up) {
     padding-right: rem-calc(48);
@@ -12,11 +16,17 @@
   }
 
   &--primary {
+    outline: none;
     background-color: color(primary);
     color: color(white);
 
     &:hover {
-      background-color: color(primary-light);
+      cursor: pointer;
+      background-color: color(primary-darker);
+    }
+
+    &.ant-btn-primary {
+      border: none;
     }
   }
 

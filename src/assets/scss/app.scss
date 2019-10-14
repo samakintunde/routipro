@@ -14,6 +14,7 @@
 // BASE
 @import "./base/resets";
 @import "./base/colors";
+@import "./base/shadows";
 
 // COMPONENTS
 @import "./components/buttons";
@@ -23,7 +24,7 @@
 @import "./components/map";
 @import "./components/card";
 @import "./components/results";
-@import "./components/steps";
+@import "./components/stops";
 
 // UTILS
 @import "./utils/text";
