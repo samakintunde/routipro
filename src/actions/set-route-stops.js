@@ -1,7 +1,6 @@
 import {
   ADD_ROUTE_STOPS,
   REMOVE_ROUTE_STOP,
-  CHANGE_BUS_STOP_INDEX,
   SORT_BUS_STOP_INDEX
 } from "../constants/action-types";
 
@@ -29,6 +28,11 @@ const removeBusStop = (dispatch, stop) => {
   });
 };
 
+/**
+ * Action creator to set active points (origin and destination)
+ * @param {Function} dispatch The dispatch function to update the state.
+ * @param {Object} payload An object containing the bus stop, index and destination to remove.
+ */
 const sortBusStopIndex = (dispatch, payload) => {
   return dispatch({
     type: SORT_BUS_STOP_INDEX,
