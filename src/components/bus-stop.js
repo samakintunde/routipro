@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Icon } from "antd";
 import { motion } from "framer-motion";
 import { Draggable } from "react-beautiful-dnd";
-import uuid from "uuid/v5";
 
 import { Map } from "./";
 

@@ -1,7 +1,6 @@
 import {
   SET_ROUTE_POINTS,
   ADD_ROUTE_STOPS,
-  SORT_BUS_STOPS,
   REMOVE_ROUTE_STOP,
   SORT_BUS_STOP_INDEX
 } from "../constants/action-types";
