@@ -35,15 +35,16 @@ const RouteForm = () => {
   /**
    * * Gets the details of the place you're searching for
    * @param {Object} request The location being typed by the user
+   * @param {Function} updateState The function to use in updating state
    * */
-  const fetchPlaceSuggestions = request => {
+  const fetchPlaceSuggestions = (request, updateState) => {
     autocompleteService.getPlacePredictions(request, (predictions, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         const refinedPredictions = Array.from(
           predictions,
           prediction => prediction.description
         );
-        setSuggestions(refinedPredictions);
+        updateState(refinedPredictions);
       }
     });
   };
@@ -69,7 +70,7 @@ const RouteForm = () => {
       types: ["geocode", "establishment"]
     };
 
-    debounce(fetchPlaceSuggestions(request), 500);
+    debounce(fetchPlaceSuggestions(request, setSuggestions), 500);
   };
 
   /**
