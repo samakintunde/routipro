@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import { STATIC_MAP } from "../services/api";
+import BusStopModel from "../models/bus-stop";
 
 const Map = props => {
-  const { index, active, stop } = props;
+  const { index, active, stop, handleClick, handleEdit } = props;
   const { coordinates } = stop;
   const { google } = window;
 
-  let map = null;
+  let map = useRef(null);
 
   const mapImage = encodeURI(
     `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`
@@ -14,14 +15,31 @@ const Map = props => {
 
   const mapOptions = {
     center: new google.maps.LatLng(coordinates.lat, coordinates.lng),
-    marker: new google.maps.Marker({
-      position: coordinates,
-      map: map
-    }),
+
     disableDefaultUI: true,
     gestureHandling: "cooperative",
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoom: 15
+  };
+
+  const getPlaceDetails = position => {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ latLng: position }, (results, status) => {
+      if (status === google.maps.GeocoderStatus.OK) {
+        console.log(results);
+        const data = {
+          ...stop,
+          id: results[0].place_id,
+          name: results[0].address_components[0].short_name,
+          coordinates: {
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng()
+          }
+        };
+        const busStop = new BusStopModel(data);
+        handleEdit({ index, stop: busStop });
+      }
+    });
   };
 
   /**
@@ -30,7 +48,17 @@ const Map = props => {
   const initMap = mapOptions => {
     const mapEl = document.getElementById(`map-${index}`);
     if (!mapEl) return;
-    map = new google.maps.Map(mapEl, mapOptions);
+    map.current = new google.maps.Map(mapEl, mapOptions);
+    const marker = new google.maps.Marker({
+      position: coordinates,
+      map: map.current,
+      animation: google.maps.Animation.DROP,
+      draggable: true
+    });
+
+    google.maps.event.addListener(marker, "dragend", () => {
+      getPlaceDetails(marker.getPosition());
+    });
   };
 
   if (active) {
@@ -39,7 +67,7 @@ const Map = props => {
     });
 
     return (
-      <div className="cell bus-stop__map-container">
+      <div className="cell bus-stop__map-container" onClick={handleClick}>
         <div
           className="bus-stop__map bus-stop__map--visible"
           id={`map-${index}`}
@@ -48,7 +76,7 @@ const Map = props => {
     );
   } else {
     return (
-      <div className="cell bus-stop__map-container">
+      <div className="cell bus-stop__map-container" onClick={handleClick}>
         <img
           className="bus-stop__map bus-stop__map--visible"
           src={mapImage}

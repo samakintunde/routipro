@@ -20,7 +20,7 @@ const RouteMap = () => {
   } = google.maps;
   const { PlacesService } = google.maps.places;
 
-  const routeBoxer = new RouteBoxer();
+  const routeBoxer = useRef(new RouteBoxer());
 
   let distance = 1;
   let boxpolys = null;
@@ -37,6 +37,7 @@ const RouteMap = () => {
    */
   const init = () => {
     map = new Map(mapEl.current, mapOptions);
+    // routeBoxer.current = new RouteBoxer();
 
     window.directionsService = new DirectionsService();
     window.directionsRenderer = new DirectionsRenderer({
@@ -64,7 +65,8 @@ const RouteMap = () => {
           new LatLng(coordinates.southWest.lat(), coordinates.southWest.lng()),
           new LatLng(coordinates.northEast.lat(), coordinates.northEast.lng())
         ),
-        types: ["bus_station"]
+        // types: "bus_station"],
+        keyword: "bus"
       };
 
       window.placesService.nearbySearch(request, (results, status) => {
@@ -87,7 +89,7 @@ const RouteMap = () => {
 
         // Box around the overview path of the first route
         var path = result.routes[0].overview_path;
-        var boxes = routeBoxer.box(path, distance);
+        var boxes = routeBoxer.current.box(path, distance);
 
         drawBoxes(boxes);
 

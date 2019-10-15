@@ -21,7 +21,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      {route.stops.length && <Results route={route} />}
+      {route.stops.length > 1 && <Results route={route} />}
     </main>
   );
 };

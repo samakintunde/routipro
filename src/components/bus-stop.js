@@ -76,11 +76,21 @@ const BusStop = props => {
                   )}
                 </p>
                 <div className="grid-x">
-                  <div onClick={() => activateEdit()}>
-                    {editing ? <Icon type="check" /> : <Icon type="edit" />}
+                  <div
+                    className="icon-container"
+                    onClick={() => activateEdit()}
+                  >
+                    {editing ? (
+                      <Icon type="check" className="bus-stop__save-btn" />
+                    ) : (
+                      <Icon type="edit" className="bus-stop__edit-btn" />
+                    )}
                   </div>
                   {!editing && (
-                    <div onClick={() => handleDelete(stop)}>
+                    <div
+                      className="icon-container"
+                      onClick={() => handleDelete(stop)}
+                    >
                       <Icon
                         type="close-circle"
                         theme="filled"
@@ -94,7 +104,8 @@ const BusStop = props => {
                 index={index}
                 stop={stop}
                 active={active}
-                onClick={handleMapRender}
+                handleClick={handleMapRender}
+                handleEdit={handleEdit}
               ></Map>
               <div className="grid-x">
                 <p className="cell small-6 grid-y">
