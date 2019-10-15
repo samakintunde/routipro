@@ -1,4 +1,5 @@
 import React from "react";
+import { STATIC_MAP } from "../services/api";
 
 const Map = props => {
   const { index, active, stop } = props;
@@ -7,7 +8,9 @@ const Map = props => {
 
   let map = null;
 
-  const mapImage = `https://maps.googleapis.com/maps/api/staticmap?zoom=18&size=960x320&maptype=roadmap&key=AIzaSyDWplqBHPUmNu-Z28uZTxUVHPpAnM9BrPM&center=${coordinates.lat},${coordinates.lng}`;
+  const mapImage = encodeURI(
+    `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`
+  );
 
   const mapOptions = {
     center: new google.maps.LatLng(coordinates.lat, coordinates.lng),

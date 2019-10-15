@@ -81,7 +81,7 @@ const RouteMap = () => {
     };
 
     // Make the directions request
-    window.directionsService.route(request, async function(result, status) {
+    window.directionsService.route(request, function(result, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
 

@@ -1,6 +1,7 @@
 import {
   SET_ROUTE_POINTS,
   ADD_ROUTE_STOPS,
+  EDIT_ROUTE_STOP,
   REMOVE_ROUTE_STOP,
   SORT_BUS_STOP_INDEX
 } from "../constants/action-types";
@@ -17,6 +18,7 @@ const routeReducer = (state = initialState, action) => {
   const { payload, type } = action;
 
   let stops;
+  let sortedStops;
 
   switch (type) {
     case SET_ROUTE_POINTS:
@@ -24,7 +26,12 @@ const routeReducer = (state = initialState, action) => {
     case ADD_ROUTE_STOPS:
       stops = [...state.stops, payload];
       stops = makeObjectsOfArrayUnique(stops, "name");
-      let sortedStops = sortBusStops(stops, "distanceFromOrigin");
+      sortedStops = sortBusStops(stops, "distanceFromOrigin");
+      return { ...state, stops: sortedStops };
+    case EDIT_ROUTE_STOP:
+      stops = state.stops;
+      stops[payload.index] = payload.stop;
+      sortedStops = sortBusStops(stops, "distanceFromOrigin");
       return { ...state, stops: sortedStops };
     case REMOVE_ROUTE_STOP:
       stops = state.stops.filter(stop => stop.id !== payload.id);

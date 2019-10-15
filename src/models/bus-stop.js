@@ -16,7 +16,9 @@ class BusStopModel {
       lat: coordinates.lat,
       lng: coordinates.lng
     };
-    this.distanceFromOrigin = getDistance(originCoords, this.coordinates);
+    this.distanceFromOrigin = originCoords
+      ? getDistance(originCoords, this.coordinates)
+      : data.distanceFromOrigin;
   }
 
   static fromJSON(data, originCoords) {

@@ -1,13 +1,14 @@
 import React, { useState, useContext } from "react";
-import { Input, Button, Drawer, InputNumber } from "antd";
+import { Drawer } from "antd";
 import { motion } from "framer-motion";
 import uuid from "uuid/v5";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-import { RouteForm } from "./index";
+import { RouteForm, AddStopForm } from "./index";
 import { BusStop, RoundButton } from "../components";
 import {
   addBusStop,
+  editBusStop,
   removeBusStop,
   sortBusStopIndex
 } from "../actions/set-route-stops";
@@ -16,37 +17,9 @@ import BusStopModel from "../models/bus-stop";
 
 const Results = props => {
   const { route } = props;
-  const [newBusStopForm, setNewBusStopForm] = useState({
-    name: null,
-    lat: null,
-    lng: null
-  });
   const [stopFormOpen, setStopFormOpen] = useState(false);
 
   const { dispatchRoute } = useContext(RouteContext);
-
-  const handleInput = e => {
-    const { name, value } = e.target;
-
-    setNewBusStopForm({
-      ...newBusStopForm,
-      [name]: value
-    });
-  };
-
-  const handleLatChange = value => {
-    setNewBusStopForm({
-      ...newBusStopForm,
-      lat: value
-    });
-  };
-
-  const handleLngChange = value => {
-    setNewBusStopForm({
-      ...newBusStopForm,
-      lng: value
-    });
-  };
 
   const handleBusStopDelete = stop => {
     removeBusStop(dispatchRoute, stop);
@@ -66,10 +39,12 @@ const Results = props => {
     });
   };
 
-  const submitNewStop = e => {
-    e.preventDefault();
+  const handleBusStopEdit = stop => {
+    editBusStop(dispatchRoute, stop);
+  };
 
-    const { name, lat, lng } = newBusStopForm;
+  const submitNewStop = stop => {
+    const { name, lat, lng } = stop;
     const originCoords = route.origin.coordinates;
 
     const newBusStop = new BusStopModel(
@@ -114,6 +89,7 @@ const Results = props => {
                       index={i}
                       stop={stop}
                       handleDelete={handleBusStopDelete}
+                      handleEdit={handleBusStopEdit}
                     />
                   ))}
                   {provided.placeholder}
@@ -130,34 +106,7 @@ const Results = props => {
           height="max-content"
           getContainer={false}
         >
-          <form action="#" className="grid-y form" onSubmit={submitNewStop}>
-            <div className="cell form-group">
-              <label htmlFor="new-name">Name</label>
-              <Input
-                type="text"
-                id="new-name"
-                name="name"
-                onChange={handleInput}
-                autoComplete="false"
-              />
-            </div>
-
-            <div className="cell form-group">
-              <label htmlFor="new-lat">Latitude</label>
-              <InputNumber id="new-lat" name="lat" onChange={handleLatChange} />
-            </div>
-
-            <div className="cell form-group">
-              <label htmlFor="new-lng">Longitude</label>
-              <InputNumber id="new-lng" name="lng" onChange={handleLngChange} />
-            </div>
-
-            <div className="cell form-group">
-              <Button htmlType="submit" block className="button--primary">
-                Add Stop
-              </Button>
-            </div>
-          </form>
+          <AddStopForm submitNewStop={submitNewStop} />
         </Drawer>
         <div className="fab-container">
           {!stopFormOpen && (

@@ -129,20 +129,18 @@ const RouteForm = () => {
         <AutoComplete
           allowClear={true}
           dataSource={suggestions}
-          value={form.origin.name}
           id="origin"
           onChange={val => handleInputChange("origin", val)}
-        ></AutoComplete>
+        />
       </div>
       <div className="cell form-group">
         <label htmlFor="end-point">Destination</label>
         <AutoComplete
           allowClear={true}
           id="destination"
-          value={form.destination.name}
           dataSource={suggestions}
           onChange={val => handleInputChange("destination", val)}
-        ></AutoComplete>
+        />
       </div>
       <div className="cell align-center">
         <div className="form-group text-center">
