@@ -14,6 +14,7 @@
     &:hover {
       border-color: color(gray-lighter);
       box-shadow: none;
+      cursor: default;
     }
 
     &__map-container {
@@ -37,17 +38,29 @@
       }
     }
 
-    &__close-btn {
-      cursor: pointer;
-      transition: 0.3s ease-in-out;
-
-      &:hover {
-        color: color(accent-1);
-      }
-    }
-
     p {
       margin: 0;
+    }
+
+    .icon-container {
+      padding: 0 rem-calc(4);
+      cursor: pointer;
+      margin-left: rem-calc(8);
+
+      .anticon {
+        transition: 0.3s ease-in-out;
+        color: color(gray);
+      }
+
+      &:hover .bus-stop__close-btn {
+        color: color(accent-2);
+      }
+      &:hover .bus-stop__save-btn {
+        color: color(accent-1);
+      }
+      &:hover .bus-stop__edit-btn {
+        color: color(black);
+      }
     }
   }
 }
