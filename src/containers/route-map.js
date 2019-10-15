@@ -37,7 +37,7 @@ const RouteMap = () => {
    */
   const init = () => {
     map = new Map(mapEl.current, mapOptions);
-    // routeBoxer.current = new RouteBoxer();
+    routeBoxer.current = new RouteBoxer();
 
     window.directionsService = new DirectionsService();
     window.directionsRenderer = new DirectionsRenderer({
@@ -65,8 +65,7 @@ const RouteMap = () => {
           new LatLng(coordinates.southWest.lat(), coordinates.southWest.lng()),
           new LatLng(coordinates.northEast.lat(), coordinates.northEast.lng())
         ),
-        // types: "bus_station"],
-        keyword: "bus"
+        types: ["bus_station"]
       };
 
       window.placesService.nearbySearch(request, (results, status) => {

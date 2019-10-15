@@ -26,7 +26,6 @@ const Map = props => {
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ latLng: position }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK) {
-        console.log(results);
         const data = {
           ...stop,
           id: results[0].place_id,
