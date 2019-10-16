@@ -24,9 +24,7 @@ const BusStop = props => {
   };
 
   const activateEdit = () => {
-    setEditing(!editing);
-
-    if (!editing) {
+    if (editing) {
       const data = {
         ...stop,
         name: editedStop.name,
@@ -41,6 +39,7 @@ const BusStop = props => {
         stop: busStop
       });
     }
+    setEditing(!editing);
   };
 
   const handleStopEdit = e => {

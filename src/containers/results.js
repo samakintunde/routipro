@@ -74,11 +74,26 @@ const Results = props => {
           <RouteForm />
         </div>
         <div className="grid-x section--sm">
-          <p>
-            From <strong>{route.origin.name}</strong> to{" "}
-            <strong>{route.destination.name}</strong>
-          </p>
-          <p>{route.stops.length} results</p>
+          <small className="cell auto">
+            <p>
+              From{" "}
+              <strong className="color-primary-darkest">
+                {route.origin.name}
+              </strong>{" "}
+              to{" "}
+              <strong className="color-primary-darkest">
+                {route.destination.name}
+              </strong>
+            </p>
+          </small>
+          <small className="cell small-offset-1 shrink">
+            <p>
+              <strong className="color-primary-darkest">
+                {route.stops.length}
+              </strong>{" "}
+              results
+            </p>
+          </small>
         </div>
         {route.stops.length !== 0 && (
           <Droppable droppableId={droppableId}>
