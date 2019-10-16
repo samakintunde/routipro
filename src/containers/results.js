@@ -16,10 +16,9 @@ import { RouteContext } from "../context/route-context";
 import BusStopModel from "../models/bus-stop";
 
 const Results = props => {
-  const { route } = props;
   const [stopFormOpen, setStopFormOpen] = useState(false);
 
-  const { dispatchRoute } = useContext(RouteContext);
+  const { route, dispatchRoute } = useContext(RouteContext);
 
   const handleBusStopDelete = stop => {
     removeBusStop(dispatchRoute, stop);
@@ -73,6 +72,28 @@ const Results = props => {
       <DragDropContext onDragEnd={handleBusStopDrag}>
         <div className="cell grid-x">
           <RouteForm />
+        </div>
+        <div className="grid-x section--sm">
+          <small className="cell auto">
+            <p>
+              From{" "}
+              <strong className="color-primary-darkest">
+                {route.origin.name}
+              </strong>{" "}
+              to{" "}
+              <strong className="color-primary-darkest">
+                {route.destination.name}
+              </strong>
+            </p>
+          </small>
+          <small className="cell small-offset-1 shrink">
+            <p>
+              <strong className="color-primary-darkest">
+                {route.stops.length}
+              </strong>{" "}
+              results
+            </p>
+          </small>
         </div>
         {route.stops.length !== 0 && (
           <Droppable droppableId={droppableId}>

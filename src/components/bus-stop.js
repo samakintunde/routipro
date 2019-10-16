@@ -24,9 +24,7 @@ const BusStop = props => {
   };
 
   const activateEdit = () => {
-    setEditing(!editing);
-
-    if (!editing) {
+    if (editing) {
       const data = {
         ...stop,
         name: editedStop.name,
@@ -41,6 +39,7 @@ const BusStop = props => {
         stop: busStop
       });
     }
+    setEditing(!editing);
   };
 
   const handleStopEdit = e => {
@@ -63,9 +62,9 @@ const BusStop = props => {
           <motion.div className="cell grid-y bus-stop" key={index}>
             <div className="cell">
               <div className="grid-x align-justify">
-                <p className="font-bold">
+                <div className="cell auto">
                   {!editing ? (
-                    editedStop.name
+                    <p className="font-bold">{editedStop.name}</p>
                   ) : (
                     <Input
                       size="small"
@@ -74,8 +73,8 @@ const BusStop = props => {
                       onChange={handleStopEdit}
                     />
                   )}
-                </p>
-                <div className="grid-x">
+                </div>
+                <div className="cell shrink grid-x">
                   <div
                     className="icon-container"
                     onClick={() => activateEdit()}

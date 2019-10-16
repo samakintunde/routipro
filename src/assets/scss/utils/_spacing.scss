@@ -15,3 +15,16 @@
     padding-bottom: #{$padding}rem;
   }
 }
+
+$sections: (
+  sm: 1,
+  md: 2,
+  lg: 3
+);
+
+@each $type, $size in $sections {
+  .section--#{$type} {
+    padding-top: $size;
+    padding-bottom: $size;
+  }
+}

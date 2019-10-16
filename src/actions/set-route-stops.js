@@ -1,4 +1,5 @@
 import {
+  ADD_ROUTE_STOP,
   ADD_ROUTE_STOPS,
   EDIT_ROUTE_STOP,
   REMOVE_ROUTE_STOP,
@@ -8,12 +9,24 @@ import {
 /**
  * Action creator to set active points (origin and destination)
  * @param {Function} dispatch The dispatch function to update the state.
- * @param {Object} stops An array containing the list of bus stops.
+ * @param {Object} stop A single bus stop.
  */
 const addBusStop = (dispatch, stop) => {
   return dispatch({
-    type: ADD_ROUTE_STOPS,
+    type: ADD_ROUTE_STOP,
     payload: stop
+  });
+};
+
+/**
+ * Action creator to set active points (origin and destination)
+ * @param {Function} dispatch The dispatch function to update the state.
+ * @param {Array} stops An array containing the list of bus stops.
+ */
+const addBusStops = (dispatch, stops) => {
+  return dispatch({
+    type: ADD_ROUTE_STOPS,
+    payload: stops
   });
 };
 
@@ -48,4 +61,10 @@ const sortBusStopIndex = (dispatch, payload) => {
   });
 };
 
-export { addBusStop, editBusStop, removeBusStop, sortBusStopIndex };
+export {
+  addBusStop,
+  addBusStops,
+  editBusStop,
+  removeBusStop,
+  sortBusStopIndex
+};

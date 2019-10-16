@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { AutoComplete, Button, Modal } from "antd";
 
 import { RouteContext } from "../context/route-context";
@@ -30,7 +30,8 @@ const RouteForm = () => {
     PlacesServiceStatus
   } = google.maps.places;
   const autocompleteService = new AutocompleteService();
-  const sessionToken = new AutocompleteSessionToken();
+
+  const token = useRef(new AutocompleteSessionToken());
 
   /**
    * * Gets the details of the place you're searching for
@@ -66,11 +67,11 @@ const RouteForm = () => {
     const request = {
       input: value,
       componentRestrictions: { country: "ng" },
-      token: sessionToken,
+      token: token.current,
       types: ["geocode", "establishment"]
     };
 
-    debounce(fetchPlaceSuggestions(request, setSuggestions), 500);
+    debounce(fetchPlaceSuggestions(request, setSuggestions), 1000);
   };
 
   /**
@@ -79,6 +80,8 @@ const RouteForm = () => {
    * */
   const handleFormSubmit = e => {
     e.preventDefault();
+    setLoading(true);
+
     const { origin, destination } = form;
     const placesService = new PlacesService(
       document.querySelector(".dummy-map")
@@ -90,8 +93,6 @@ const RouteForm = () => {
         title: "Either the origin or the destination field is empty."
       });
     }
-
-    setLoading(true);
 
     [origin, destination].forEach((query, i) => {
       const field = i === 0 ? "origin" : "destination";

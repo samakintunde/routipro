@@ -1,8 +1,9 @@
 import React, { useEffect, useContext, useRef } from "react";
 
 import { RouteContext } from "../context/route-context";
-import { addBusStop } from "../actions/set-route-stops";
+import { addBusStops } from "../actions/set-route-stops";
 import BusStopModel from "../models/bus-stop";
+import { mapsPromisify } from "../utils/promisify";
 
 const RouteMap = () => {
   const { route, dispatchRoute } = useContext(RouteContext);
@@ -65,24 +66,34 @@ const RouteMap = () => {
           new LatLng(coordinates.southWest.lat(), coordinates.southWest.lng()),
           new LatLng(coordinates.northEast.lat(), coordinates.northEast.lng())
         ),
-        types: ["bus_station"]
+        // types: ["bus_station"]
+        keyword: "bus"
       };
 
-      window.placesService.nearbySearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          results.forEach(result => {
-            const busStop = BusStopModel.fromJSON(
-              result,
-              route.origin.coordinates
-            );
-            addBusStop(dispatchRoute, busStop);
-          });
-        }
-      });
+      // Promisified Nearby Search
+      function asyncNearbySearch(request) {
+        return new Promise(function(resolve, reject) {
+          // Set Timeout to prevent Google QUERY_LIMIT
+          setTimeout(() => {
+            window.placesService.nearbySearch(request, function(
+              results,
+              status
+            ) {
+              if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                reject(new Error(status));
+              } else {
+                resolve(results);
+              }
+            });
+          }, 1000);
+        });
+      }
+
+      return await asyncNearbySearch(request);
     };
 
     // Make the directions request
-    window.directionsService.route(request, function(result, status) {
+    window.directionsService.route(request, async function(result, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
 
@@ -97,13 +108,21 @@ const RouteMap = () => {
           lon: result.routes[0].legs[0].start_location.lng()
         };
 
-        boxes.forEach((box, i) => {
+        const busStops = boxes.map(async (box, i) => {
           const coordinates = {
             southWest: box.getSouthWest(),
             northEast: box.getNorthEast()
           };
-          getBusStopInBox(coordinates, origin);
+
+          return await getBusStopInBox(coordinates, origin);
         });
+
+        const res = await Promise.all(busStops);
+        const bloatedStops = res.flat();
+        const stops = bloatedStops.map(stop =>
+          BusStopModel.fromJSON(stop, origin)
+        );
+        addBusStops(dispatchRoute, stops);
       } else {
         alert("Directions query failed: " + status);
       }
@@ -137,7 +156,7 @@ const RouteMap = () => {
 
   useEffect(init, []);
 
-  useEffect(() => makeRoute(route), [route.origin, route.destination]);
+  useEffect(() => makeRoute(route), [route.origin.name]);
 
   return <div ref={mapEl} id="main-map" className="map"></div>;
 };
