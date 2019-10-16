@@ -99,10 +99,11 @@ const Results = props => {
           </Droppable>
         )}
         <Drawer
+          className="add-stop-form"
           title="Add New Stop"
           placement="bottom"
           visible={stopFormOpen}
-          style={{ position: "absolute", right: 0, zIndex: 1 }}
+          onClose={() => setStopFormOpen(false)}
           height="max-content"
           getContainer={false}
         >
