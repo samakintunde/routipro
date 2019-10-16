@@ -1,1 +1,1 @@
-web: ./routipro
+web: bin/routipro
