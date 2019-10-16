@@ -1,17 +1,23 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { STATIC_MAP } from "../services/api";
 import BusStopModel from "../models/bus-stop";
 
 const Map = props => {
   const { index, active, stop, handleClick, handleEdit } = props;
   const { coordinates } = stop;
+
+  const [imageUrl, setImageUrl] = useState("");
   const { google } = window;
 
   let map = useRef(null);
 
-  const mapImage = encodeURI(
-    `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`
-  );
+  useEffect(() => {
+    setImageUrl(
+      encodeURI(
+        `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`
+      )
+    );
+  }, []);
 
   const mapOptions = {
     center: new google.maps.LatLng(coordinates.lat, coordinates.lng),
@@ -22,7 +28,7 @@ const Map = props => {
     zoom: 15
   };
 
-  const getPlaceDetails = position => {
+  function getPlaceDetails(position) {
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ latLng: position }, (results, status) => {
       if (status === google.maps.GeocoderStatus.OK) {
@@ -39,12 +45,12 @@ const Map = props => {
         handleEdit({ index, stop: busStop });
       }
     });
-  };
+  }
 
   /**
    * Initializes the Google Maps Client and renders a map
    */
-  const initMap = mapOptions => {
+  function initMap(mapOptions) {
     const mapEl = document.getElementById(`map-${index}`);
     if (!mapEl) return;
     map.current = new google.maps.Map(mapEl, mapOptions);
@@ -58,7 +64,7 @@ const Map = props => {
     google.maps.event.addListener(marker, "dragend", () => {
       getPlaceDetails(marker.getPosition());
     });
-  };
+  }
 
   if (active) {
     setTimeout(() => {
@@ -78,7 +84,7 @@ const Map = props => {
       <div className="cell bus-stop__map-container" onClick={handleClick}>
         <img
           className="bus-stop__map bus-stop__map--visible"
-          src={mapImage}
+          src={imageUrl}
           alt=""
         />
       </div>

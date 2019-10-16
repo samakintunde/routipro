@@ -1,5 +1,6 @@
 import {
   SET_ROUTE_POINTS,
+  ADD_ROUTE_STOP,
   ADD_ROUTE_STOPS,
   EDIT_ROUTE_STOP,
   REMOVE_ROUTE_STOP,
@@ -23,11 +24,16 @@ const routeReducer = (state = initialState, action) => {
   switch (type) {
     case SET_ROUTE_POINTS:
       return { ...state, ...payload };
-    case ADD_ROUTE_STOPS:
+    case ADD_ROUTE_STOP:
       stops = [...state.stops, payload];
       stops = makeObjectsOfArrayUnique(stops, "name");
+      return { ...state, stops };
+
+    case ADD_ROUTE_STOPS:
+      stops = makeObjectsOfArrayUnique(payload, "name");
       sortedStops = sortBusStops(stops, "distanceFromOrigin");
       return { ...state, stops: sortedStops };
+    // return { ...state, stops };
     case EDIT_ROUTE_STOP:
       stops = state.stops;
       stops[payload.index] = payload.stop;
