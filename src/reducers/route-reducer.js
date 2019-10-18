@@ -32,7 +32,6 @@ const routeReducer = (state = initialState, action) => {
     case ADD_ROUTE_STOPS:
       stops = makeObjectsOfArrayUnique(payload, "name");
       sortedStops = sortBusStops(stops, "distanceFromOrigin");
-      console.log(sortedStops);
       return { ...state, stops: sortedStops };
     // return { ...state, stops };
     case EDIT_ROUTE_STOP:
