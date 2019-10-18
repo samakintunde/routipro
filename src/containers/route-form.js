@@ -94,11 +94,18 @@ const RouteForm = () => {
       });
     }
 
-    // const asyncFindPlace = async(request) => {
-    //   return new Promise((resolve, reject) =>
-
-    // });
-    // }
+    // const asyncFindPlace = async request => {
+    //   return new Promise((resolve, reject) => {
+    //     placesService.findPlaceFromQuery(request, (results, status) => {
+    //       if (
+    //         status === PlacesServiceStatus.OK ||
+    //         status === PlacesServiceStatus.ZERO_RESULTS
+    //       ) {
+    //         resolve(results);
+    //       }
+    //     });
+    //   });
+    // };
 
     [origin, destination].forEach((query, i) => {
       const field = i === 0 ? "origin" : "destination";
