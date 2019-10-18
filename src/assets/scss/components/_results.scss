@@ -13,8 +13,9 @@
     margin: rem-calc(8) 0;
     overflow-y: scroll;
 
-    &::-webkit-scrollbar {
+    &-webkit-scrollbar {
       width: rem-calc(4) !important;
+      color: color(gray);
     }
   }
 

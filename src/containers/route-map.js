@@ -60,7 +60,7 @@ const RouteMap = () => {
       travelMode: google.maps.DirectionsTravelMode.DRIVING
     };
 
-    const getBusStopInBox = async coordinates => {
+    const getBusStopInBox = async (coordinates, i) => {
       const request = {
         bounds: new LatLngBounds(
           new LatLng(coordinates.southWest.lat(), coordinates.southWest.lng()),
@@ -79,13 +79,16 @@ const RouteMap = () => {
               results,
               status
             ) {
-              if (status !== google.maps.places.PlacesServiceStatus.OK) {
-                reject(new Error(status));
-              } else {
+              if (
+                status === google.maps.places.PlacesServiceStatus.OK ||
+                status == "ZERO_RESULTS"
+              ) {
                 resolve(results);
+              } else {
+                reject(new Error(status));
               }
             });
-          }, 1000);
+          }, 500 * i);
         });
       }
 
@@ -105,7 +108,7 @@ const RouteMap = () => {
 
         const origin = {
           lat: result.routes[0].legs[0].start_location.lat(),
-          lon: result.routes[0].legs[0].start_location.lng()
+          lng: result.routes[0].legs[0].start_location.lng()
         };
 
         const busStops = boxes.map(async (box, i) => {
@@ -114,11 +117,14 @@ const RouteMap = () => {
             northEast: box.getNorthEast()
           };
 
-          return await getBusStopInBox(coordinates, origin);
+          return await getBusStopInBox(coordinates, i);
         });
 
+        // Obtain all Bus Stops
         const res = await Promise.all(busStops);
+        // Flatten Array
         const bloatedStops = res.flat();
+        // Refine bus stops using model
         const stops = bloatedStops.map(stop =>
           BusStopModel.fromJSON(stop, origin)
         );

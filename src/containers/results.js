@@ -16,9 +16,17 @@ import { RouteContext } from "../context/route-context";
 import BusStopModel from "../models/bus-stop";
 
 const Results = props => {
+  // STATE
   const [stopFormOpen, setStopFormOpen] = useState(false);
 
+  // STORE (CONTEXT)
   const { route, dispatchRoute } = useContext(RouteContext);
+
+  // ANIMATION (FRAMER MOTION)
+  const busStopVariants = {
+    in: { opacity: 1, x: 0 },
+    out: { opacity: 0, x: "100%" }
+  };
 
   const handleBusStopDelete = stop => {
     removeBusStop(dispatchRoute, stop);
@@ -68,6 +76,7 @@ const Results = props => {
       className="cell large-4 grid-y results-container"
       initial={{ x: "100%" }}
       animate={{ x: 0 }}
+      transition={{ ease: "easeOut", duration: 0.56 }}
     >
       <DragDropContext onDragEnd={handleBusStopDrag}>
         <div className="cell grid-x">
@@ -103,7 +112,11 @@ const Results = props => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <div className="cell grid-y bus-stops">
+                <motion.div
+                  className="cell grid-y bus-stops"
+                  animate={route ? "in" : "out"}
+                  variants={busStopVariants}
+                >
                   {route.stops.map((stop, i) => (
                     <BusStop
                       key={stop.id}
@@ -114,7 +127,7 @@ const Results = props => {
                     />
                   ))}
                   {provided.placeholder}
-                </div>
+                </motion.div>
               </div>
             )}
           </Droppable>

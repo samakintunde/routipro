@@ -2,7 +2,6 @@
  *
  * @param {Object} origin The starting point for our measurements
  * @param {Object} point The point we're measuring from the origin
- * @param {String} unit The unit of the distance
  */
 const getDistance = (origin, point, unit) => {
   const lat1 = origin.lat;
@@ -27,6 +26,7 @@ const getDistance = (origin, point, unit) => {
     dist = Math.acos(dist);
     dist = (dist * 180) / Math.PI;
     dist = dist * 60 * 1.1515;
+
     if (unit === "K") {
       dist = dist * 1.609344;
     }
