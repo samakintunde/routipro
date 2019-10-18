@@ -1,23 +1,51 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useContext } from "react";
+import { message } from "antd";
 
 import { Header } from "./components";
-import { Home } from "./screens";
+import { RouteMap } from "./containers/";
+import { RouteForm, Results } from "./containers/index";
+import { RouteContext } from "./context/route-context";
 
 import "./assets/scss/app.scss";
 
 const App = () => {
+  const { route } = useContext(RouteContext);
+
+  const success = () => {
+    message.success(`Bus Stops successfully sent to SERVER_ENDPOINT`);
+  };
+
+  const error = () => {
+    message.error("Something bad has happened!");
+  };
+
+  const sendBusStops = e => {
+    success();
+  };
+
   return (
-    <Router>
-      <div className="grid-container full app">
-        <Header title="Routipro" />
-        <Switch>
-          <Route path="/" exact>
-            <Home />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+    <div className="grid-container full app">
+      <Header
+        title="Routipro"
+        showButton={route.stops.length ? true : false}
+        sendData={sendBusStops}
+      />
+      <main className="main grid-x main--home">
+        <div className="cell small-12 map-container">
+          <RouteMap />
+        </div>
+        {!route.stops.length && (
+          <div className="cell align-self-bottom medium-6 large-4 grid-container padding-bottom-1 form-container">
+            <div className="grid-x align-center card">
+              <div className="cell large-12">
+                <RouteForm />
+              </div>
+            </div>
+          </div>
+        )}
+        {route.stops.length && <Results route={route} />}
+      </main>
+    </div>
   );
 };
 

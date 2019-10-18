@@ -33,9 +33,7 @@ class BusStopModel {
       lat: location.lat(),
       lng: location.lng()
     };
-    console.log(coordinates, originCoords);
     const distanceFromOrigin = getDistance(originCoords, coordinates);
-    console.log(distanceFromOrigin);
 
     return {
       id,

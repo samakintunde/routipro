@@ -1,1 +1,1 @@
-web: cd server && ./routipro
+web: bin/routipro

@@ -15,6 +15,10 @@ body {
 
     .form-container {
       z-index: 1;
+
+      @include breakpoint(medium down) {
+        position: absolute;
+      }
     }
   }
 }
