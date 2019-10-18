@@ -94,6 +94,12 @@ const RouteForm = () => {
       });
     }
 
+    // const asyncFindPlace = async(request) => {
+    //   return new Promise((resolve, reject) =>
+
+    // });
+    // }
+
     [origin, destination].forEach((query, i) => {
       const field = i === 0 ? "origin" : "destination";
 
