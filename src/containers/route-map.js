@@ -81,7 +81,7 @@ const RouteMap = () => {
             ) {
               if (
                 status === google.maps.places.PlacesServiceStatus.OK ||
-                status == "ZERO_RESULTS"
+                status === "ZERO_RESULTS"
               ) {
                 resolve(results);
               } else {
