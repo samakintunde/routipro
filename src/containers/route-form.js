@@ -2,11 +2,12 @@ import React, { useState, useContext, useRef } from "react";
 import { AutoComplete, Button, Modal } from "antd";
 
 import { RouteContext } from "../context/route-context";
+import { setLoading } from "../actions/set-loading";
 import { setActivePoints } from "../actions/set-route-points";
 import { debounce } from "../utils/debounce";
 
 const RouteForm = () => {
-  const { dispatchRoute } = useContext(RouteContext);
+  const { route, dispatchRoute } = useContext(RouteContext);
 
   const [form, setForm] = useState({
     origin: {
@@ -18,7 +19,6 @@ const RouteForm = () => {
       coordinates: {}
     }
   });
-  const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
   const { google } = window;
@@ -78,62 +78,62 @@ const RouteForm = () => {
    * * Handles the submission of the form and extracts the origin and destination of the inputs in the form
    * @param {EventListenerObject} e
    * */
-  const handleFormSubmit = e => {
+  const handleFormSubmit = async e => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(dispatchRoute, true);
 
-    const { origin, destination } = form;
     const placesService = new PlacesService(
       document.querySelector(".dummy-map")
     );
 
     // Handle Empty fields in form error
-    if (!origin.name || !destination.name) {
+    if (!form.origin.name || !form.destination.name) {
       return Modal.error({
         title: "Either the origin or the destination field is empty."
       });
     }
 
-    // const asyncFindPlace = async request => {
-    //   return new Promise((resolve, reject) => {
-    //     placesService.findPlaceFromQuery(request, (results, status) => {
-    //       if (
-    //         status === PlacesServiceStatus.OK ||
-    //         status === PlacesServiceStatus.ZERO_RESULTS
-    //       ) {
-    //         resolve(results);
-    //       }
-    //     });
-    //   });
-    // };
-
-    [origin, destination].forEach((query, i) => {
-      const field = i === 0 ? "origin" : "destination";
-
-      placesService.findPlaceFromQuery(
-        {
-          query: query.name,
-          fields: ["geometry.location"]
-        },
-        (results, status) => {
-          if (status === PlacesServiceStatus.OK) {
-            let newRoutePoints = form;
-
-            newRoutePoints[field] = {
-              name: query.name,
-              coordinates: {
-                lat: results[0].geometry.location.lat(),
-                lng: results[0].geometry.location.lng()
-              }
-            };
-
-            setForm(newRoutePoints);
-            setActivePoints(dispatchRoute, form);
+    const asyncFindPlace = async request => {
+      return new Promise((resolve, reject) => {
+        placesService.findPlaceFromQuery(request, (results, status) => {
+          if (
+            status === PlacesServiceStatus.OK ||
+            status === PlacesServiceStatus.ZERO_RESULTS
+          ) {
+            resolve(results);
+          } else {
+            reject(status);
           }
-        }
-      );
+        });
+      });
+    };
+
+    const routePoints = [form.origin, form.destination].map(async query => {
+      const request = {
+        query: query.name,
+        fields: ["name", "geometry.location"]
+      };
+
+      return await asyncFindPlace(request);
     });
-    setLoading(false);
+
+    const res = await Promise.all(routePoints);
+
+    const origin = res[0][0];
+    const destination = res[1][0];
+
+    setForm({
+      origin: {
+        name: origin.name,
+        coordinates: origin.geometry.location
+      },
+      destination: {
+        name: destination.name,
+        coordinates: destination.geometry.location
+      }
+    });
+
+    setActivePoints(dispatchRoute, form);
   };
 
   return (
@@ -162,7 +162,7 @@ const RouteForm = () => {
             className="button--primary"
             type="primary"
             htmlType="submit"
-            loading={loading}
+            loading={route.loading}
             block
           >
             Get Route Details

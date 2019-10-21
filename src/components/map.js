@@ -3,7 +3,7 @@ import { STATIC_MAP } from "../services/api";
 import BusStopModel from "../models/bus-stop";
 
 const Map = props => {
-  const { index, active, stop, handleClick, handleEdit } = props;
+  const { index, editing, stop, handleEdit } = props;
   const { coordinates } = stop;
 
   const [imageUrl, setImageUrl] = useState("");
@@ -66,13 +66,13 @@ const Map = props => {
     });
   }
 
-  if (active) {
+  if (editing) {
     setTimeout(() => {
       initMap(mapOptions);
     });
 
     return (
-      <div className="cell bus-stop__map-container" onClick={handleClick}>
+      <div className="cell bus-stop__map-container">
         <div
           className="bus-stop__map bus-stop__map--visible"
           id={`map-${index}`}
@@ -81,7 +81,7 @@ const Map = props => {
     );
   } else {
     return (
-      <div className="cell bus-stop__map-container" onClick={handleClick}>
+      <div className="cell bus-stop__map-container">
         <img
           className="bus-stop__map bus-stop__map--visible"
           src={imageUrl}

@@ -4,6 +4,7 @@ import { RouteContext } from "../context/route-context";
 import { addBusStops } from "../actions/set-route-stops";
 import BusStopModel from "../models/bus-stop";
 import { mapsPromisify } from "../utils/promisify";
+import { setLoading } from "../actions/set-loading";
 
 const RouteMap = () => {
   const { route, dispatchRoute } = useContext(RouteContext);
@@ -30,7 +31,8 @@ const RouteMap = () => {
   const mapOptions = {
     center: new LatLng(6.5244, 3.3792),
     mapTypeId: MapTypeId.ROADMAP,
-    zoom: 8
+    zoom: 8,
+    disableDefaultUI: true
   };
 
   /**
@@ -81,7 +83,7 @@ const RouteMap = () => {
             ) {
               if (
                 status === google.maps.places.PlacesServiceStatus.OK ||
-                status == "ZERO_RESULTS"
+                status === "ZERO_RESULTS"
               ) {
                 resolve(results);
               } else {
@@ -129,6 +131,8 @@ const RouteMap = () => {
           BusStopModel.fromJSON(stop, origin)
         );
         addBusStops(dispatchRoute, stops);
+
+        setLoading(dispatchRoute, false);
       } else {
         alert("Directions query failed: " + status);
       }

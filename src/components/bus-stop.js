@@ -10,18 +10,12 @@ const BusStop = props => {
   const { index, stop, handleDelete, handleEdit } = props;
   const { name, coordinates } = stop;
 
-  const [active, setActive] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editedStop, setEditedStop] = useState({
     name: name,
     lat: coordinates.lat,
     lng: coordinates.lng
   });
-
-  const handleMapRender = e => {
-    if (active) return;
-    setActive(true);
-  };
 
   const activateEdit = () => {
     if (editing) {
@@ -52,7 +46,7 @@ const BusStop = props => {
   };
 
   return (
-    <Draggable draggableId={stop.id} index={index}>
+    <Draggable draggableId={stop.id} index={index} isDragDisabled={editing}>
       {provided => (
         <div
           {...provided.draggableProps}
@@ -102,11 +96,10 @@ const BusStop = props => {
               <Map
                 index={index}
                 stop={stop}
-                active={active}
-                handleClick={handleMapRender}
+                editing={editing}
                 handleEdit={handleEdit}
               ></Map>
-              <div className="grid-x">
+              <div className="grid-x grid-padding-x">
                 <p className="cell small-6 grid-y">
                   <strong>Long: </strong>
                   <span>
@@ -133,6 +126,7 @@ const BusStop = props => {
                         size="small"
                         name="lat"
                         value={editedStop.lat}
+                        onBlur={handleStopEdit}
                         onChange={handleStopEdit}
                       />
                     )}

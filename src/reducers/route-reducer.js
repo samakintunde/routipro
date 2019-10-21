@@ -4,7 +4,8 @@ import {
   ADD_ROUTE_STOPS,
   EDIT_ROUTE_STOP,
   REMOVE_ROUTE_STOP,
-  SORT_BUS_STOP_INDEX
+  SORT_BUS_STOP_INDEX,
+  SET_LOADING
 } from "../constants/action-types";
 import { makeObjectsOfArrayUnique } from "../utils/compare-object";
 import { sortBusStops } from "../utils/sort-distance";
@@ -12,7 +13,8 @@ import { sortBusStops } from "../utils/sort-distance";
 const initialState = {
   origin: {},
   destination: {},
-  stops: []
+  stops: [],
+  loading: false
 };
 
 const routeReducer = (state = initialState, action) => {
@@ -33,15 +35,17 @@ const routeReducer = (state = initialState, action) => {
       stops = makeObjectsOfArrayUnique(payload, "name");
       sortedStops = sortBusStops(stops, "distanceFromOrigin");
       return { ...state, stops: sortedStops };
-    // return { ...state, stops };
+
     case EDIT_ROUTE_STOP:
       stops = state.stops;
       stops[payload.index] = payload.stop;
       sortedStops = sortBusStops(stops, "distanceFromOrigin");
       return { ...state, stops: sortedStops };
+
     case REMOVE_ROUTE_STOP:
       stops = state.stops.filter(stop => stop.id !== payload.id);
       return { ...state, stops };
+
     case SORT_BUS_STOP_INDEX:
       const { stop, source, destination } = payload;
 
@@ -57,6 +61,9 @@ const routeReducer = (state = initialState, action) => {
       stops = [...prefixItems, stop, ...suffixItems];
 
       return { ...state, stops };
+
+    case SET_LOADING:
+      return { ...state, loading: payload };
 
     default:
       return state;
