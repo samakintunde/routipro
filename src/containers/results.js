@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Drawer } from "antd";
+import { Collapse, Drawer } from "antd";
 import { motion } from "framer-motion";
 import uuid from "uuid/v5";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
@@ -15,7 +15,9 @@ import {
 import { RouteContext } from "../context/route-context";
 import BusStopModel from "../models/bus-stop";
 
-const Results = props => {
+const { Panel } = Collapse;
+
+const Results = () => {
   // STATE
   const [stopFormOpen, setStopFormOpen] = useState(false);
 
@@ -80,7 +82,15 @@ const Results = props => {
     >
       <DragDropContext onDragEnd={handleBusStopDrag}>
         <div className="cell grid-x">
-          <RouteForm />
+          <Collapse
+            defaultActiveKey={["1"]}
+            className="width-100"
+            expandIconPosition="right"
+          >
+            <Panel header="Find Stops" key="1">
+              <RouteForm />
+            </Panel>
+          </Collapse>
         </div>
         <div className="grid-x section--sm">
           <small className="cell auto">

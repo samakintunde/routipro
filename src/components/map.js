@@ -74,6 +74,11 @@ const Map = props => {
 
     return (
       <div
+        draggable
+        onDragStart={e => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
         className="cell bus-stop__map-container"
         onClick={e => handleClick(active)}
       >

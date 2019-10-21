@@ -31,7 +31,8 @@ const RouteMap = () => {
   const mapOptions = {
     center: new LatLng(6.5244, 3.3792),
     mapTypeId: MapTypeId.ROADMAP,
-    zoom: 8
+    zoom: 8,
+    disableDefaultUI: true
   };
 
   /**
