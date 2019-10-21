@@ -18,9 +18,15 @@ const BusStop = props => {
     lng: coordinates.lng
   });
 
-  const handleMapRender = e => {
-    if (active) return;
-    setActive(true);
+  const handleMapRender = active => {
+    active ? setActive(false) : setActive(true);
+  };
+
+  const handleExternalClick = e => {
+    console.log(e);
+    if (e.target.classList.contains("bus-stop__map-container") && active) {
+      setActive(false);
+    }
   };
 
   const activateEdit = () => {
@@ -59,7 +65,11 @@ const BusStop = props => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <motion.div className="cell grid-y bus-stop" key={index}>
+          <motion.div
+            className="cell grid-y bus-stop"
+            key={index}
+            onClick={handleExternalClick}
+          >
             <div className="cell">
               <div className="grid-x align-justify">
                 <div className="cell auto">

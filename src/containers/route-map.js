@@ -4,6 +4,7 @@ import { RouteContext } from "../context/route-context";
 import { addBusStops } from "../actions/set-route-stops";
 import BusStopModel from "../models/bus-stop";
 import { mapsPromisify } from "../utils/promisify";
+import { setLoading } from "../actions/set-loading";
 
 const RouteMap = () => {
   const { route, dispatchRoute } = useContext(RouteContext);
@@ -129,6 +130,8 @@ const RouteMap = () => {
           BusStopModel.fromJSON(stop, origin)
         );
         addBusStops(dispatchRoute, stops);
+
+        setLoading(dispatchRoute, false);
       } else {
         alert("Directions query failed: " + status);
       }

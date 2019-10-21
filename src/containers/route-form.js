@@ -2,11 +2,12 @@ import React, { useState, useContext, useRef } from "react";
 import { AutoComplete, Button, Modal } from "antd";
 
 import { RouteContext } from "../context/route-context";
+import { setLoading } from "../actions/set-loading";
 import { setActivePoints } from "../actions/set-route-points";
 import { debounce } from "../utils/debounce";
 
 const RouteForm = () => {
-  const { dispatchRoute } = useContext(RouteContext);
+  const { route, dispatchRoute } = useContext(RouteContext);
 
   const [form, setForm] = useState({
     origin: {
@@ -18,7 +19,6 @@ const RouteForm = () => {
       coordinates: {}
     }
   });
-  const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
   const { google } = window;
@@ -80,7 +80,7 @@ const RouteForm = () => {
    * */
   const handleFormSubmit = async e => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(dispatchRoute, true);
 
     const placesService = new PlacesService(
       document.querySelector(".dummy-map")
@@ -134,7 +134,6 @@ const RouteForm = () => {
     });
 
     setActivePoints(dispatchRoute, form);
-    setLoading(false);
   };
 
   return (
@@ -163,7 +162,7 @@ const RouteForm = () => {
             className="button--primary"
             type="primary"
             htmlType="submit"
-            loading={loading}
+            loading={route.loading}
             block
           >
             Get Route Details

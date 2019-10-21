@@ -63,6 +63,7 @@ const Map = props => {
 
     google.maps.event.addListener(marker, "dragend", () => {
       getPlaceDetails(marker.getPosition());
+      handleClick(active);
     });
   }
 
@@ -72,7 +73,10 @@ const Map = props => {
     });
 
     return (
-      <div className="cell bus-stop__map-container" onClick={handleClick}>
+      <div
+        className="cell bus-stop__map-container"
+        onClick={e => handleClick(active)}
+      >
         <div
           className="bus-stop__map bus-stop__map--visible"
           id={`map-${index}`}
@@ -81,7 +85,10 @@ const Map = props => {
     );
   } else {
     return (
-      <div className="cell bus-stop__map-container" onClick={handleClick}>
+      <div
+        className="cell bus-stop__map-container"
+        onClick={e => handleClick(active)}
+      >
         <img
           className="bus-stop__map bus-stop__map--visible"
           src={imageUrl}
