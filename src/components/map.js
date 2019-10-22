@@ -19,6 +19,8 @@ const Map = props => {
 
   const { google } = window;
 
+  const imageUrl = `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`;
+
   const renderImage = async (name, url) => {
     const cache = new ImageCache();
 
@@ -34,9 +36,7 @@ const Map = props => {
   };
 
   useEffect(() => {
-    const imageUrl = `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`;
-
-    renderImage(stop.name, imageUrl);
+    // renderImage(stop.name, imageUrl);
   }, []);
 
   const mapOptions = {
@@ -86,7 +86,7 @@ const Map = props => {
     });
   }
 
-  const handleImageLoaded = () => setImageLoaded(true);
+  const handleImageLoaded = () => renderImage(stop.name, imageUrl);
 
   // RENDER
   if (editing) {
@@ -105,11 +105,17 @@ const Map = props => {
   } else {
     return (
       <div className={`cell bus-stop__map-container`}>
-        <img
-          className="bus-stop__map bus-stop__map--visible"
-          src={image}
-          alt={stop.name}
-        />
+        <LazyLoad
+          debounce={false}
+          offsetVertical={300}
+          onContentVisible={handleImageLoaded}
+        >
+          <img
+            className="bus-stop__map bus-stop__map--visible"
+            src={image}
+            alt={stop.name}
+          />
+        </LazyLoad>
       </div>
     );
   }
