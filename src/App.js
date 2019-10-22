@@ -19,7 +19,22 @@ const App = () => {
     message.error("Something bad has happened!");
   };
 
-  const sendBusStops = e => {
+  const sendBusStops = async e => {
+    const { origin, stops, destination } = route;
+
+    const data = {
+      origin,
+      destination,
+      stops: [origin, ...stops, destination]
+    };
+
+    const res = await fetch("http://127.0.0.1:8080/v1/routes", {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(data)
+    });
+    console.log("res", res);
+
     success();
   };
 

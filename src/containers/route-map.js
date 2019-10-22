@@ -1,9 +1,8 @@
 import React, { useEffect, useContext, useRef } from "react";
-
+import { Modal } from "antd";
 import { RouteContext } from "../context/route-context";
 import { addBusStops } from "../actions/set-route-stops";
 import BusStopModel from "../models/bus-stop";
-import { mapsPromisify } from "../utils/promisify";
 import { setLoading } from "../actions/set-loading";
 
 const RouteMap = () => {
@@ -55,6 +54,14 @@ const RouteMap = () => {
 
     // Convert the distance to box around the route from miles to km
     distance = distance * 1.609344;
+
+    if (distance > 50000) {
+      return Modal.error({
+        title: "We're sorry...",
+        content:
+          "That distance is rather large. Wanna do it in two searches instead?"
+      });
+    }
 
     var request = {
       origin: route.origin.name,

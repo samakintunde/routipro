@@ -53,12 +53,12 @@ const Results = () => {
   };
 
   const submitNewStop = stop => {
-    const { name, lat, lng } = stop;
+    const { id, name, lat, lng } = stop;
     const originCoords = route.origin.coordinates;
 
     const newBusStop = new BusStopModel(
       {
-        id: uuid("routipro.dev", uuid.DNS),
+        id: id || uuid("routipro.dev", uuid.DNS),
         name,
         coordinates: {
           lat,

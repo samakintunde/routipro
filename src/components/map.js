@@ -3,13 +3,17 @@ import { STATIC_MAP } from "../services/api";
 import BusStopModel from "../models/bus-stop";
 
 const Map = props => {
+  // PROPS
   const { index, editing, stop, handleEdit } = props;
   const { coordinates } = stop;
 
+  // STATE
   const [imageUrl, setImageUrl] = useState("");
-  const { google } = window;
 
+  // REFS
   let map = useRef(null);
+
+  const { google } = window;
 
   useEffect(() => {
     setImageUrl(
