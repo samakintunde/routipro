@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
+import LazyLoad from "react-lazy-load";
+
 import { STATIC_MAP } from "../services/api";
 import BusStopModel from "../models/bus-stop";
+import { ImageCache } from "../utils/fetch-image";
 
 const Map = props => {
   // PROPS
@@ -8,19 +11,32 @@ const Map = props => {
   const { coordinates } = stop;
 
   // STATE
-  const [imageUrl, setImageUrl] = useState("");
+  const [image, setImage] = useState("");
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // REFS
   let map = useRef(null);
 
   const { google } = window;
 
+  const renderImage = async (name, url) => {
+    const cache = new ImageCache();
+
+    // If Item exists in cache
+    if (cache.getImage(name)) {
+      const base64Image = cache.getImage(name);
+      setImage(base64Image);
+    } else {
+      // If image not found
+      const base64Image = await cache.addImage(name, url);
+      setImage(base64Image);
+    }
+  };
+
   useEffect(() => {
-    setImageUrl(
-      encodeURI(
-        `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`
-      )
-    );
+    const imageUrl = `${STATIC_MAP}&center=${coordinates.lat},${coordinates.lng}&markers=color:purple|${coordinates.lat},${coordinates.lng}`;
+
+    renderImage(stop.name, imageUrl);
   }, []);
 
   const mapOptions = {
@@ -70,6 +86,9 @@ const Map = props => {
     });
   }
 
+  const handleImageLoaded = () => setImageLoaded(true);
+
+  // RENDER
   if (editing) {
     setTimeout(() => {
       initMap(mapOptions);
@@ -85,11 +104,11 @@ const Map = props => {
     );
   } else {
     return (
-      <div className="cell bus-stop__map-container">
+      <div className={`cell bus-stop__map-container`}>
         <img
           className="bus-stop__map bus-stop__map--visible"
-          src={imageUrl}
-          alt=""
+          src={image}
+          alt={stop.name}
         />
       </div>
     );
