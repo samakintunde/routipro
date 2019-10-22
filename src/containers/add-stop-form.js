@@ -6,6 +6,7 @@ const AddStopForm = props => {
   // STATE
   const [suggestions, setSuggestions] = useState([]);
   const [newBusStop, setNewBusStop] = useState({
+    id: null,
     name: null,
     lat: null,
     lng: null
@@ -48,7 +49,8 @@ const AddStopForm = props => {
     placesService.findPlaceFromQuery(request, (results, status) => {
       if (status === PlacesServiceStatus.OK) {
         updateState({
-          ...state,
+          name: results[0].name,
+          id: results[0].place_id,
           lat: results[0].geometry.location.lat(),
           lng: results[0].geometry.location.lng()
         });
@@ -79,7 +81,7 @@ const AddStopForm = props => {
   const handleNameSelect = (val, _) => {
     const request = {
       query: val,
-      fields: ["geometry.location"]
+      fields: ["geometry.location", "place_id", "name"]
     };
 
     getPlaceDetails(request, newBusStop, setNewBusStop);
@@ -99,7 +101,7 @@ const AddStopForm = props => {
     });
   };
 
-  const handleFormSubmit = (e, stop) => {
+  const handleFormSubmit = e => {
     e.preventDefault();
 
     const { name, lat, lng } = newBusStop;
@@ -111,15 +113,17 @@ const AddStopForm = props => {
       });
     }
 
-    submitNewStop(stop);
+    submitNewStop(newBusStop);
+
+    setNewBusStop({
+      name: "",
+      lat: "",
+      lng: ""
+    });
   };
 
   return (
-    <form
-      action="#"
-      className="grid-y form"
-      onSubmit={e => handleFormSubmit(e, newBusStop)}
-    >
+    <form action="#" className="grid-y form" onSubmit={handleFormSubmit}>
       <div className="cell form-group">
         <label htmlFor="new-name">Name</label>
         <AutoComplete

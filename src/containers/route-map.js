@@ -1,9 +1,8 @@
 import React, { useEffect, useContext, useRef } from "react";
-
+import { Modal } from "antd";
 import { RouteContext } from "../context/route-context";
 import { addBusStops } from "../actions/set-route-stops";
 import BusStopModel from "../models/bus-stop";
-import { mapsPromisify } from "../utils/promisify";
 import { setLoading } from "../actions/set-loading";
 
 const RouteMap = () => {
@@ -101,6 +100,18 @@ const RouteMap = () => {
     window.directionsService.route(request, async function(result, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
+
+        const distance = result.routes[0].legs[0].distance.value;
+
+        if (distance > 60000) {
+          setLoading(dispatchRoute, false);
+
+          return Modal.error({
+            title: "We're sorry...",
+            content:
+              "That distance is rather large. Wanna do it in two searches instead?"
+          });
+        }
 
         // Box around the overview path of the first route
         var path = result.routes[0].overview_path;

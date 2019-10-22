@@ -122,18 +122,24 @@ const RouteForm = () => {
     const origin = res[0][0];
     const destination = res[1][0];
 
-    setForm({
+    const newForm = {
       origin: {
         name: origin.name,
-        coordinates: origin.geometry.location
+        coordinates: {
+          lat: origin.geometry.location.lat(),
+          lng: origin.geometry.location.lng()
+        }
       },
       destination: {
         name: destination.name,
-        coordinates: destination.geometry.location
+        coordinates: {
+          lat: destination.geometry.location.lat(),
+          lng: destination.geometry.location.lng()
+        }
       }
-    });
+    };
 
-    setActivePoints(dispatchRoute, form);
+    setActivePoints(dispatchRoute, newForm);
   };
 
   return (
