@@ -55,14 +55,6 @@ const RouteMap = () => {
     // Convert the distance to box around the route from miles to km
     distance = distance * 1.609344;
 
-    if (distance > 50000) {
-      return Modal.error({
-        title: "We're sorry...",
-        content:
-          "That distance is rather large. Wanna do it in two searches instead?"
-      });
-    }
-
     var request = {
       origin: route.origin.name,
       destination: route.destination.name,
@@ -108,6 +100,18 @@ const RouteMap = () => {
     window.directionsService.route(request, async function(result, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
+
+        const distance = result.routes[0].legs[0].distance.value;
+
+        if (distance > 60000) {
+          setLoading(dispatchRoute, false);
+
+          return Modal.error({
+            title: "We're sorry...",
+            content:
+              "That distance is rather large. Wanna do it in two searches instead?"
+          });
+        }
 
         // Box around the overview path of the first route
         var path = result.routes[0].overview_path;

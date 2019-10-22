@@ -5,7 +5,6 @@ const objectMatches = (object, other) => {
 };
 
 const makeObjectsOfArrayUnique = (arr, property) => {
-  // const allArticles = [...state.all, ...action.payload];
   const result = [];
   const map = new Map();
 
