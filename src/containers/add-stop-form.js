@@ -130,6 +130,7 @@ const AddStopForm = props => {
           allowClear={true}
           dataSource={suggestions}
           id="new-name"
+          value={newBusStop.name}
           onChange={handleNameInput}
           onSelect={handleNameSelect}
         />

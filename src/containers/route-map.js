@@ -101,9 +101,9 @@ const RouteMap = () => {
       if (status === google.maps.DirectionsStatus.OK) {
         window.directionsRenderer.setDirections(result);
 
-        const distance = result.routes[0].legs[0].distance.value;
+        const routeDistance = result.routes[0].legs[0].distance.value;
 
-        if (distance > 60000) {
+        if (routeDistance > 60000) {
           setLoading(dispatchRoute, false);
 
           return Modal.error({
