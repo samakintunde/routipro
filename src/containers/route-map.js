@@ -145,7 +145,12 @@ const RouteMap = () => {
 
         setLoading(dispatchRoute, false);
       } else {
-        alert("Directions query failed: " + status);
+        setLoading(dispatchRoute, false);
+        return Modal.error({
+          title: "Directions not found",
+          content:
+            "Please, check the places you're searching and try being more accurate with the address or choose some other nearby location."
+        });
       }
     });
   };
