@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Collapse, Drawer } from "antd";
+import { Button, Collapse, Drawer, Icon, Input } from "antd";
 import { motion } from "framer-motion";
 import uuid from "uuid/v5";
 import { DragDropContext } from "react-beautiful-dnd";
@@ -10,12 +10,15 @@ import {
   addBusStop,
   editBusStop,
   removeBusStop,
-  sortBusStopIndex
+  sortBusStopIndex,
+  searchBusStops,
+  cancelSearch
 } from "../actions/set-route-stops";
 import { RouteContext } from "../context/route-context";
 import BusStopModel from "../models/bus-stop";
 
 const { Panel } = Collapse;
+const { Search } = Input;
 
 const ResultsSidebar = () => {
   // STATE
@@ -44,6 +47,16 @@ const ResultsSidebar = () => {
 
   const handleBusStopEdit = stop => {
     editBusStop(dispatchRoute, stop);
+  };
+
+  const handleSearch = (value, e) => {
+    e.preventDefault();
+    if (!value) return;
+    searchBusStops(dispatchRoute, value);
+  };
+
+  const handleDeleteSearch = e => {
+    cancelSearch(dispatchRoute);
   };
 
   const submitNewStop = stop => {
@@ -105,9 +118,35 @@ const ResultsSidebar = () => {
               results
             </p>
           </small>
+          <div className="cell small-12 grid-x">
+            <div className="cell small-3">Search Results</div>
+            <div className="cell auto">
+              <Search
+                size="small"
+                placeholder="Search"
+                onSearch={handleSearch}
+              ></Search>
+            </div>
+            {(route.filteredStops.length !== 0 || route.query) && (
+              <motion.div
+                className="cell shrink controls"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+              >
+                <Button
+                  className="danger"
+                  type="link"
+                  size="small"
+                  onClick={handleDeleteSearch}
+                >
+                  clear search
+                </Button>
+              </motion.div>
+            )}
+          </div>
         </div>
         <Results
-          stops={route.stops}
+          stops={route.filteredStops}
           handleBusStopDelete={handleBusStopDelete}
           handleBusStopEdit={handleBusStopEdit}
         />

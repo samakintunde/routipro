@@ -70,24 +70,24 @@ const BusStop = props => {
                 </div>
                 <div className="cell shrink grid-x">
                   <div
-                    className="icon-container"
+                    className="icon-container controls"
                     onClick={() => activateEdit()}
                   >
                     {editing ? (
-                      <Icon type="check" className="bus-stop__save-btn" />
+                      <Icon type="check" className="success" />
                     ) : (
-                      <Icon type="edit" className="bus-stop__edit-btn" />
+                      <Icon type="edit" className="normal" />
                     )}
                   </div>
                   {!editing && (
                     <div
-                      className="icon-container"
+                      className="icon-container controls"
                       onClick={() => handleDelete(stop)}
                     >
                       <Icon
                         type="close-circle"
                         theme="filled"
-                        className="bus-stop__close-btn"
+                        className="danger"
                       />
                     </div>
                   )}

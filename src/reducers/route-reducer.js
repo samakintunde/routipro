@@ -3,9 +3,11 @@ import {
   ADD_ROUTE_STOP,
   ADD_ROUTE_STOPS,
   EDIT_ROUTE_STOP,
+  SEARCH_STOPS,
   REMOVE_ROUTE_STOP,
   SORT_BUS_STOP_INDEX,
-  SET_LOADING
+  SET_LOADING,
+  CANCEL_SEARCH
 } from "../constants/action-types";
 import { makeObjectsOfArrayUnique } from "../utils/compare-object";
 import { sortBusStops } from "../utils/sort-distance";
@@ -14,7 +16,9 @@ const initialState = {
   origin: {},
   destination: {},
   stops: [],
-  loading: false
+  loading: false,
+  query: "",
+  filteredStops: []
 };
 
 const routeReducer = (state = initialState, action) => {
@@ -35,7 +39,7 @@ const routeReducer = (state = initialState, action) => {
     case ADD_ROUTE_STOPS:
       stops = makeObjectsOfArrayUnique(payload, "name");
       sortedStops = sortBusStops(stops, "distanceFromOrigin");
-      return { ...state, stops: sortedStops };
+      return { ...state, stops: sortedStops, filteredStops: sortedStops };
 
     case EDIT_ROUTE_STOP:
       stops = state.stops;
@@ -62,6 +66,15 @@ const routeReducer = (state = initialState, action) => {
       stops = [...prefixItems, stop, ...suffixItems];
 
       return { ...state, stops };
+
+    case SEARCH_STOPS:
+      stops = state.stops.filter(stop => {
+        return stop.name.toLowerCase().includes(payload.toLowerCase());
+      });
+      return { ...state, query: payload, filteredStops: stops };
+
+    case CANCEL_SEARCH:
+      return { ...state, query: "", filteredStops: state.stops };
 
     case SET_LOADING:
       return { ...state, loading: payload };

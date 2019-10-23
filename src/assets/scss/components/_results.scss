@@ -39,3 +39,20 @@
     }
   }
 }
+
+.controls {
+  color: color(black);
+  transition: 0.3s ease-in-out;
+
+  &:hover .danger {
+    color: color(accent-2);
+  }
+
+  &:hover .success {
+    color: color(accent-1);
+  }
+
+  &:hover .normal {
+    color: color(gray);
+  }
+}

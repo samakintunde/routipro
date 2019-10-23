@@ -31,7 +31,7 @@ $sections: (
 
 @each $type, $size in $sections {
   .section--#{$type} {
-    padding-top: $size;
-    padding-bottom: $size;
+    padding-top: #{$size}rem;
+    padding-bottom: #{$size}rem;
   }
 }

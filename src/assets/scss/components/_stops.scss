@@ -50,21 +50,6 @@
       padding: 0 rem-calc(4);
       cursor: pointer;
       margin-left: rem-calc(8);
-
-      .anticon {
-        transition: 0.3s ease-in-out;
-        color: color(gray);
-      }
-
-      &:hover .bus-stop__close-btn {
-        color: color(accent-2);
-      }
-      &:hover .bus-stop__save-btn {
-        color: color(accent-1);
-      }
-      &:hover .bus-stop__edit-btn {
-        color: color(black);
-      }
     }
   }
 }

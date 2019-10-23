@@ -1,4 +1,5 @@
 import React from "react";
+import { Result } from "antd";
 import { motion } from "framer-motion";
 import uuid from "uuid/v5";
 import { Droppable } from "react-beautiful-dnd";
@@ -19,7 +20,7 @@ const Results = props => {
 
   return (
     <>
-      {stops.length !== 0 && (
+      {stops.length !== 0 ? (
         <Droppable droppableId={droppableId}>
           {provided => (
             <div
@@ -46,6 +47,8 @@ const Results = props => {
             </div>
           )}
         </Droppable>
+      ) : (
+        <Result status="warning" title="Sorry, there were no results" />
       )}
     </>
   );
