@@ -16,16 +16,20 @@ import {
 } from "../actions/set-route-stops";
 import { RouteContext } from "../context/route-context";
 import BusStopModel from "../models/bus-stop";
+import { searchedBusStops } from "../selectors";
 
 const { Panel } = Collapse;
 const { Search } = Input;
 
 const ResultsSidebar = () => {
-  // STATE
-  const [stopFormOpen, setStopFormOpen] = useState(false);
-
   // STORE (CONTEXT)
   const { route, dispatchRoute } = useContext(RouteContext);
+
+  // STATE
+  const [stopFormOpen, setStopFormOpen] = useState(false);
+  const [stops] = useState(route.stops);
+  const [queriedStops, setQueriedStops] = useState(stops);
+  const [query, setQuery] = useState("");
 
   const handleBusStopDelete = stop => {
     removeBusStop(dispatchRoute, stop);
@@ -49,14 +53,15 @@ const ResultsSidebar = () => {
     editBusStop(dispatchRoute, stop);
   };
 
-  const handleSearch = (value, e) => {
-    e.preventDefault();
-    if (!value) return;
-    searchBusStops(dispatchRoute, value);
+  const handleSearch = e => {
+    const { value } = e.target;
+    setQuery(value);
+    setQueriedStops(searchedBusStops(stops, value));
   };
 
   const handleDeleteSearch = e => {
-    cancelSearch(dispatchRoute);
+    setQuery("");
+    setQueriedStops(stops);
   };
 
   const submitNewStop = stop => {
@@ -124,7 +129,8 @@ const ResultsSidebar = () => {
               <Search
                 size="small"
                 placeholder="Search"
-                onSearch={handleSearch}
+                value={query}
+                onChange={handleSearch}
               ></Search>
             </div>
             {(route.filteredStops.length !== 0 || route.query) && (
@@ -146,7 +152,7 @@ const ResultsSidebar = () => {
           </div>
         </div>
         <Results
-          stops={route.filteredStops}
+          stops={queriedStops}
           handleBusStopDelete={handleBusStopDelete}
           handleBusStopEdit={handleBusStopEdit}
         />
