@@ -3,10 +3,11 @@ import { Button, Input, Modal } from "antd";
 
 const Header = props => {
   // PROPS
-  const { title, showButton, sendData } = props;
+  const { title, showButton, sendBusStops } = props;
 
   // STATE
   const [modalVisible, setModalVisible] = useState(false);
+  const [sending, setSending] = useState(false);
   const [endpoint, setEndpoint] = useState("");
 
   // FUNCTIONS
@@ -19,9 +20,14 @@ const Header = props => {
   const handleCancel = () => {
     setModalVisible(false);
   };
-  const handleSend = () => {
-    sendData();
-    setModalVisible(false);
+
+  const handleSend = async () => {
+    const res = await sendBusStops(endpoint);
+    if (res) {
+      setModalVisible(true);
+    } else {
+      setModalVisible(false);
+    }
   };
 
   const ModalFooter = [
@@ -53,8 +59,7 @@ const Header = props => {
             <Modal
               title="Send Bus Stops to Endpoint"
               visible={modalVisible}
-              onOk={sendData}
-              onCancel={handleCancel}
+              confirmLoading={sending}
               footer={ModalFooter}
             >
               <p className="color-gray">Endpoint URL</p>
