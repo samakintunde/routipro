@@ -62,7 +62,12 @@ const BusStop = props => {
             key={index}
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: 0.3 }}
+            exit={{
+              height: 0,
+              overflow: "hidden",
+              opacity: 0,
+              transition: 0.3
+            }}
             positionTransition
           >
             <div className="cell">

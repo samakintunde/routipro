@@ -36,8 +36,6 @@ const ResultsSidebar = () => {
   const [query, setQuery] = useState("");
   const [disableDrag, setDisableDrag] = useState(false);
 
-  const worker = useRef(null);
-
   // LIFECYCLE
   // useEffect(() => {
   //   if (window.Worker) {
@@ -49,7 +47,6 @@ const ResultsSidebar = () => {
   route.stops.forEach(t => (t.filePrepared = fuzzysort.prepare(t.name)));
 
   const handleBusStopDelete = stop => {
-    console.log(stop);
     removeBusStop(dispatchRoute, stop);
   };
 
@@ -80,7 +77,6 @@ const ResultsSidebar = () => {
   };
 
   const search = debounce(function() {
-    console.log("func runs");
     const searchResults = fuzzysort
       .go(query, route.stops, searchOptions)
       .map(result => result.obj);
@@ -92,18 +88,8 @@ const ResultsSidebar = () => {
     setQuery(value);
 
     if (query) {
-      // Sideload the job to a worker if the stops are much
-      // if (stops.length > 50) {
-      //   worker.current.postMessage({ fn: fuzzysort.go, stops, value });
-      //   worker.current.onmessage = e => {
-      //     const searchResults = e.data;
-      //     setQueriedStops(searchResults);
-      //   };
-      // } else {
-      // Run on the UI Thread
-      setDisableDrag(true);
       search();
-      // }
+      setDisableDrag(true);
     } else {
       setDisableDrag(false);
       setQueriedStops(route.stops);
