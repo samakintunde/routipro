@@ -35,7 +35,7 @@ const Results = props => {
               >
                 {stops.map((stop, i) => (
                   <BusStop
-                    key={stop.id}
+                    key={stop.name}
                     index={i}
                     stop={stop}
                     handleDelete={handleBusStopDelete}

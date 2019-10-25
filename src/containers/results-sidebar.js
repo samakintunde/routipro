@@ -1,9 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Button, Collapse, Drawer, Input } from "antd";
 import { motion } from "framer-motion";
 import uuid from "uuid/v5";
 import { DragDropContext } from "react-beautiful-dnd";
-import Fuse from "fuse.js";
 import fuzzysort from "fuzzysort";
 
 import { RouteForm, AddStopForm, Results } from "./index";
@@ -16,31 +15,37 @@ import {
 } from "../actions/set-route-stops";
 import { RouteContext } from "../context/route-context";
 import BusStopModel from "../models/bus-stop";
-import { searchedBusStops } from "../selectors";
+import { debounce } from "../utils/debounce";
 
 const { Panel } = Collapse;
 const { Search } = Input;
 
 // FUZZY SEARCH OPTIONS
 const searchOptions = {
-  key: "name"
+  key: "name",
+  threshhold: -500
 };
 
 const ResultsSidebar = () => {
   // STORE (CONTEXT)
   const { route, dispatchRoute } = useContext(RouteContext);
+  const { stops } = route;
 
   // STATE
   const [stopFormOpen, setStopFormOpen] = useState(false);
-  const [stops] = useState(route.stops);
   const [queriedStops, setQueriedStops] = useState(stops);
   const [query, setQuery] = useState("");
+
+  // LIFECYCLE
+  useEffect(() => setQueriedStops(stops), [stops]);
+
+  stops.forEach(t => (t.filePrepared = fuzzysort.prepare(t.name)));
 
   const handleBusStopDelete = stop => {
     removeBusStop(dispatchRoute, stop);
   };
 
-  const handleBusStopDrag = result => {
+  const handleBusStopDragEnd = result => {
     const { destination, source } = result;
 
     if (!destination) return;
@@ -58,20 +63,18 @@ const ResultsSidebar = () => {
     editBusStop(dispatchRoute, stop);
   };
 
-  const fuse = new Fuse(stops, searchOptions);
-
   const handleSearch = e => {
     const { value } = e.target;
     setQuery(value);
+
     if (value) {
-      const searchResults = fuzzysort.go(value, stops, searchOptions);
-      // const searchResults = fuse.search(value);
-      console.log("searchresults", searchResults);
-      setQueriedStops(searchResults);
+      const searchResults = fuzzysort
+        .go(value, stops, searchOptions)
+        .map(result => result.obj);
+      debounce(setQueriedStops(searchResults), 5000);
     } else {
       setQueriedStops(stops);
     }
-    // setQueriedStops(searchedBusStops(stops, value));
   };
 
   const handleDeleteSearch = e => {
@@ -105,7 +108,10 @@ const ResultsSidebar = () => {
       animate={{ x: 0 }}
       transition={{ ease: "easeOut", duration: 0.56 }}
     >
-      <DragDropContext onDragEnd={handleBusStopDrag}>
+      <DragDropContext
+        onDragEnd={handleBusStopDragEnd}
+        onDragStart={hanleBusStopDragStart}
+      >
         <div className="cell grid-x">
           <Collapse
             defaultActiveKey={["1"]}
