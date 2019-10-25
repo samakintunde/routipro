@@ -1,11 +1,9 @@
 import {
   ADD_ROUTE_STOP,
   ADD_ROUTE_STOPS,
-  CANCEL_SEARCH,
   EDIT_ROUTE_STOP,
   REMOVE_ROUTE_STOP,
-  SORT_BUS_STOP_INDEX,
-  SEARCH_STOPS
+  SORT_BUS_STOP_INDEX
 } from "../constants/action-types";
 
 /**
@@ -63,25 +61,10 @@ const sortBusStopIndex = (dispatch, payload) => {
   });
 };
 
-const searchBusStops = (dispatch, payload) => {
-  return dispatch({
-    type: SEARCH_STOPS,
-    payload
-  });
-};
-
-const cancelSearch = dispatch => {
-  return dispatch({
-    type: CANCEL_SEARCH
-  });
-};
-
 export {
   addBusStop,
   addBusStops,
-  cancelSearch,
   editBusStop,
   removeBusStop,
-  searchBusStops,
   sortBusStopIndex
 };

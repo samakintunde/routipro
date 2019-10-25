@@ -25,7 +25,10 @@
       height: rem-calc(128);
 
       > .LazyLoad {
-        background-color: color(gray-light);
+        background: linear-gradient(270deg, #8f8f8f, #c0c0c0);
+        -webkit-animation: image-loader 30s ease infinite;
+        -moz-animation: image-loader 30s ease infinite;
+        animation: image-loader 30s ease infinite;
         height: 100%;
       }
       > * > img {
@@ -54,11 +57,36 @@
   }
 }
 
-@keyframes image-loading {
+@-webkit-keyframes image-loader {
   0% {
-    background: linear-gradient(color(gray), color(gray-dark));
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
   100% {
-    background: linear-gradient(color(gray), color(gray-dark));
+    background-position: 0% 50%;
+  }
+}
+@-moz-keyframes image-loader {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes image-loader {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

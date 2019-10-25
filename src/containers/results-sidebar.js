@@ -1,8 +1,10 @@
 import React, { useState, useContext } from "react";
-import { Button, Collapse, Drawer, Icon, Input } from "antd";
+import { Button, Collapse, Drawer, Input } from "antd";
 import { motion } from "framer-motion";
 import uuid from "uuid/v5";
 import { DragDropContext } from "react-beautiful-dnd";
+import Fuse from "fuse.js";
+import fuzzysort from "fuzzysort";
 
 import { RouteForm, AddStopForm, Results } from "./index";
 import { RoundButton } from "../components";
@@ -10,9 +12,7 @@ import {
   addBusStop,
   editBusStop,
   removeBusStop,
-  sortBusStopIndex,
-  searchBusStops,
-  cancelSearch
+  sortBusStopIndex
 } from "../actions/set-route-stops";
 import { RouteContext } from "../context/route-context";
 import BusStopModel from "../models/bus-stop";
@@ -20,6 +20,11 @@ import { searchedBusStops } from "../selectors";
 
 const { Panel } = Collapse;
 const { Search } = Input;
+
+// FUZZY SEARCH OPTIONS
+const searchOptions = {
+  key: "name"
+};
 
 const ResultsSidebar = () => {
   // STORE (CONTEXT)
@@ -53,10 +58,20 @@ const ResultsSidebar = () => {
     editBusStop(dispatchRoute, stop);
   };
 
+  const fuse = new Fuse(stops, searchOptions);
+
   const handleSearch = e => {
     const { value } = e.target;
     setQuery(value);
-    setQueriedStops(searchedBusStops(stops, value));
+    if (value) {
+      const searchResults = fuzzysort.go(value, stops, searchOptions);
+      // const searchResults = fuse.search(value);
+      console.log("searchresults", searchResults);
+      setQueriedStops(searchResults);
+    } else {
+      setQueriedStops(stops);
+    }
+    // setQueriedStops(searchedBusStops(stops, value));
   };
 
   const handleDeleteSearch = e => {
@@ -133,7 +148,7 @@ const ResultsSidebar = () => {
                 onChange={handleSearch}
               ></Search>
             </div>
-            {(route.filteredStops.length !== 0 || route.query) && (
+            {(queriedStops.length !== 0 || query) && (
               <motion.div
                 className="cell shrink controls"
                 initial={{ scale: 0, opacity: 0 }}

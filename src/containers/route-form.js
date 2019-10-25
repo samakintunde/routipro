@@ -80,7 +80,6 @@ const RouteForm = () => {
    * */
   const handleFormSubmit = async e => {
     e.preventDefault();
-    setLoading(dispatchRoute, true);
 
     const placesService = new PlacesService(
       document.querySelector(".dummy-map")
@@ -92,6 +91,7 @@ const RouteForm = () => {
         title: "Either the origin or the destination field is empty."
       });
     }
+    setLoading(dispatchRoute, true);
 
     const asyncFindPlace = async request => {
       return new Promise((resolve, reject) => {
