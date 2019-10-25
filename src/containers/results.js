@@ -8,7 +8,7 @@ import { BusStop } from "../components";
 
 const Results = props => {
   // PROPS
-  const { stops, handleBusStopDelete, handleBusStopEdit } = props;
+  const { stops, handleBusStopDelete, handleBusStopEdit, disableDrag } = props;
 
   // ANIMATION (FRAMER MOTION)
   const busStopVariants = {
@@ -40,6 +40,7 @@ const Results = props => {
                     stop={stop}
                     handleDelete={handleBusStopDelete}
                     handleEdit={handleBusStopEdit}
+                    disableDrag={disableDrag}
                   />
                 ))}
                 {provided.placeholder}

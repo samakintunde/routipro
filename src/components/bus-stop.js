@@ -7,7 +7,7 @@ import { Map } from "./";
 import BusStopModel from "../models/bus-stop";
 
 const BusStop = props => {
-  const { index, stop, handleDelete, handleEdit } = props;
+  const { index, stop, handleDelete, handleEdit, disableDrag } = props;
   const { name, coordinates } = stop;
 
   const [editing, setEditing] = useState(false);
@@ -46,7 +46,11 @@ const BusStop = props => {
   };
 
   return (
-    <Draggable draggableId={stop.id} index={index} isDragDisabled={editing}>
+    <Draggable
+      draggableId={stop.id}
+      index={index}
+      isDragDisabled={editing || disableDrag ? true : false}
+    >
       {provided => (
         <div
           {...provided.draggableProps}

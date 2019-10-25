@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Button, Collapse, Drawer, Input } from "antd";
+import React, { useState, useContext, useEffect, useRef } from "react";
+import { Button, Collapse, Drawer, Input, Modal } from "antd";
 import { motion } from "framer-motion";
 import uuid from "uuid/v5";
 import { DragDropContext } from "react-beautiful-dnd";
@@ -35,8 +35,16 @@ const ResultsSidebar = () => {
   const [stopFormOpen, setStopFormOpen] = useState(false);
   const [queriedStops, setQueriedStops] = useState(stops);
   const [query, setQuery] = useState("");
+  const [disableDrag, setDisableDrag] = useState(false);
+
+  const worker = useRef(null);
 
   // LIFECYCLE
+  useEffect(() => {
+    if (window.Worker) {
+      worker.current = new Worker("../services/worker.js");
+    }
+  }, []);
   useEffect(() => setQueriedStops(stops), [stops]);
 
   stops.forEach(t => (t.filePrepared = fuzzysort.prepare(t.name)));
@@ -59,6 +67,14 @@ const ResultsSidebar = () => {
     });
   };
 
+  const handleBusStopDragStart = () => {
+    if (disableDrag)
+      return Modal.error({
+        title: `Oops!!!`,
+        content: `Please, clear search first.`
+      });
+  };
+
   const handleBusStopEdit = stop => {
     editBusStop(dispatchRoute, stop);
   };
@@ -68,17 +84,24 @@ const ResultsSidebar = () => {
     setQuery(value);
 
     if (value) {
+      setDisableDrag(true);
+      // worker.current.postMessage({ stops, value });
+      // worker.current.onmessage = e => {
+      //   console.log("in main", e);
+      // };
       const searchResults = fuzzysort
         .go(value, stops, searchOptions)
         .map(result => result.obj);
       debounce(setQueriedStops(searchResults), 5000);
     } else {
+      setDisableDrag(false);
       setQueriedStops(stops);
     }
   };
 
   const handleDeleteSearch = e => {
     setQuery("");
+    setDisableDrag(false);
     setQueriedStops(stops);
   };
 
@@ -110,7 +133,7 @@ const ResultsSidebar = () => {
     >
       <DragDropContext
         onDragEnd={handleBusStopDragEnd}
-        onDragStart={hanleBusStopDragStart}
+        onDragStart={handleBusStopDragStart}
       >
         <div className="cell grid-x">
           <Collapse
@@ -174,6 +197,7 @@ const ResultsSidebar = () => {
         </div>
         <Results
           stops={queriedStops}
+          disableDrag={disableDrag}
           handleBusStopDelete={handleBusStopDelete}
           handleBusStopEdit={handleBusStopEdit}
         />

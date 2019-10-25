@@ -57,6 +57,7 @@ const Header = props => {
               Send To Endpoint
             </Button>
             <Modal
+              onCancel={handleCancel}
               title="Send Bus Stops to Endpoint"
               visible={modalVisible}
               confirmLoading={sending}
