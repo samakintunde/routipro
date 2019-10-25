@@ -1,6 +1,6 @@
 import React from "react";
 import { Result } from "antd";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import uuid from "uuid/v5";
 import { Droppable } from "react-beautiful-dnd";
 
@@ -33,16 +33,18 @@ const Results = props => {
                 animate={stops ? "in" : "out"}
                 variants={busStopVariants}
               >
-                {stops.map((stop, i) => (
-                  <BusStop
-                    key={stop.name}
-                    index={i}
-                    stop={stop}
-                    handleDelete={handleBusStopDelete}
-                    handleEdit={handleBusStopEdit}
-                    disableDrag={disableDrag}
-                  />
-                ))}
+                <AnimatePresence initial={false}>
+                  {stops.map((stop, i) => (
+                    <BusStop
+                      key={stop.name}
+                      index={i}
+                      stop={stop}
+                      handleDelete={handleBusStopDelete}
+                      handleEdit={handleBusStopEdit}
+                      disableDrag={disableDrag}
+                    />
+                  ))}
+                </AnimatePresence>
                 {provided.placeholder}
               </motion.div>
             </div>

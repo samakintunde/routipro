@@ -38,7 +38,7 @@ const RouteForm = () => {
    * @param {Object} request The location being typed by the user
    * @param {Function} updateState The function to use in updating state
    * */
-  const fetchPlaceSuggestions = (request, updateState) => {
+  function fetchPlaceSuggestions(request, updateState) {
     autocompleteService.getPlacePredictions(request, (predictions, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         const refinedPredictions = Array.from(
@@ -48,7 +48,7 @@ const RouteForm = () => {
         updateState(refinedPredictions);
       }
     });
-  };
+  }
 
   /**
    * * Handles the value of the input as a controlled component

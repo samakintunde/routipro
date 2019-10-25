@@ -49,7 +49,7 @@ const BusStop = props => {
     <Draggable
       draggableId={stop.id}
       index={index}
-      isDragDisabled={editing || disableDrag ? true : false}
+      isDragDisabled={editing || !disableDrag ? true : false}
     >
       {provided => (
         <div
@@ -57,7 +57,14 @@ const BusStop = props => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <motion.div className="cell grid-y bus-stop" key={index}>
+          <motion.div
+            className="cell grid-y bus-stop"
+            key={index}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: 0.3 }}
+            positionTransition
+          >
             <div className="cell">
               <div className="grid-x align-justify">
                 <div className="cell auto">

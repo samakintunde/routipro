@@ -22,34 +22,34 @@ const { Search } = Input;
 
 // FUZZY SEARCH OPTIONS
 const searchOptions = {
-  key: "name",
-  threshhold: -500
+  key: "name"
+  // threshold: -5000
 };
 
 const ResultsSidebar = () => {
   // STORE (CONTEXT)
   const { route, dispatchRoute } = useContext(RouteContext);
-  const { stops } = route;
 
   // STATE
   const [stopFormOpen, setStopFormOpen] = useState(false);
-  const [queriedStops, setQueriedStops] = useState(stops);
+  const [queriedStops, setQueriedStops] = useState(route.stops);
   const [query, setQuery] = useState("");
   const [disableDrag, setDisableDrag] = useState(false);
 
   const worker = useRef(null);
 
   // LIFECYCLE
-  useEffect(() => {
-    if (window.Worker) {
-      worker.current = new Worker("../services/worker.js");
-    }
-  }, []);
-  useEffect(() => setQueriedStops(stops), [stops]);
+  // useEffect(() => {
+  //   if (window.Worker) {
+  //     worker.current = new Worker("../../worker.js");
+  //   }
+  // }, []);
+  useEffect(() => setQueriedStops(route.stops), [route.stops]);
 
-  stops.forEach(t => (t.filePrepared = fuzzysort.prepare(t.name)));
+  route.stops.forEach(t => (t.filePrepared = fuzzysort.prepare(t.name)));
 
   const handleBusStopDelete = stop => {
+    console.log(stop);
     removeBusStop(dispatchRoute, stop);
   };
 
@@ -79,30 +79,41 @@ const ResultsSidebar = () => {
     editBusStop(dispatchRoute, stop);
   };
 
+  const search = debounce(function() {
+    console.log("func runs");
+    const searchResults = fuzzysort
+      .go(query, route.stops, searchOptions)
+      .map(result => result.obj);
+    setQueriedStops(searchResults);
+  }, 500);
+
   const handleSearch = e => {
     const { value } = e.target;
     setQuery(value);
 
-    if (value) {
+    if (query) {
+      // Sideload the job to a worker if the stops are much
+      // if (stops.length > 50) {
+      //   worker.current.postMessage({ fn: fuzzysort.go, stops, value });
+      //   worker.current.onmessage = e => {
+      //     const searchResults = e.data;
+      //     setQueriedStops(searchResults);
+      //   };
+      // } else {
+      // Run on the UI Thread
       setDisableDrag(true);
-      // worker.current.postMessage({ stops, value });
-      // worker.current.onmessage = e => {
-      //   console.log("in main", e);
-      // };
-      const searchResults = fuzzysort
-        .go(value, stops, searchOptions)
-        .map(result => result.obj);
-      debounce(setQueriedStops(searchResults), 5000);
+      search();
+      // }
     } else {
       setDisableDrag(false);
-      setQueriedStops(stops);
+      setQueriedStops(route.stops);
     }
   };
 
   const handleDeleteSearch = e => {
     setQuery("");
     setDisableDrag(false);
-    setQueriedStops(stops);
+    setQueriedStops(route.stops);
   };
 
   const submitNewStop = stop => {
@@ -173,7 +184,6 @@ const ResultsSidebar = () => {
               <Search
                 size="small"
                 placeholder="Search"
-                value={query}
                 onChange={handleSearch}
               ></Search>
             </div>
