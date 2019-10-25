@@ -33,6 +33,7 @@ const Map = props => {
       const base64Image = await cache.addImage(name, url);
       setImage(base64Image);
     }
+    setImageLoaded(true);
   };
 
   useEffect(() => {
@@ -111,7 +112,9 @@ const Map = props => {
           onContentVisible={handleImageLoaded}
         >
           <img
-            className="bus-stop__map bus-stop__map--visible"
+            className={`bus-stop__map bus-stop__map--visible ${
+              imageLoaded ? "bus-stop__map--loaded" : "bus-stop__map-loading"
+            }`}
             src={image}
             alt={stop.name}
           />

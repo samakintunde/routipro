@@ -7,7 +7,7 @@ import { Map } from "./";
 import BusStopModel from "../models/bus-stop";
 
 const BusStop = props => {
-  const { index, stop, handleDelete, handleEdit } = props;
+  const { index, stop, handleDelete, handleEdit, disableDrag } = props;
   const { name, coordinates } = stop;
 
   const [editing, setEditing] = useState(false);
@@ -46,14 +46,30 @@ const BusStop = props => {
   };
 
   return (
-    <Draggable draggableId={stop.id} index={index} isDragDisabled={editing}>
+    <Draggable
+      draggableId={stop.id}
+      index={index}
+      isDragDisabled={editing || !disableDrag ? true : false}
+    >
       {provided => (
         <div
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <motion.div className="cell grid-y bus-stop" key={index}>
+          <motion.div
+            className="cell grid-y bus-stop"
+            key={index}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{
+              height: 0,
+              overflow: "hidden",
+              opacity: 0,
+              transition: 0.3
+            }}
+            positionTransition
+          >
             <div className="cell">
               <div className="grid-x align-justify">
                 <div className="cell auto">
@@ -70,24 +86,24 @@ const BusStop = props => {
                 </div>
                 <div className="cell shrink grid-x">
                   <div
-                    className="icon-container"
+                    className="icon-container controls"
                     onClick={() => activateEdit()}
                   >
                     {editing ? (
-                      <Icon type="check" className="bus-stop__save-btn" />
+                      <Icon type="check" className="success" />
                     ) : (
-                      <Icon type="edit" className="bus-stop__edit-btn" />
+                      <Icon type="edit" className="normal" />
                     )}
                   </div>
                   {!editing && (
                     <div
-                      className="icon-container"
+                      className="icon-container controls"
                       onClick={() => handleDelete(stop)}
                     >
                       <Icon
                         type="close-circle"
                         theme="filled"
-                        className="bus-stop__close-btn"
+                        className="danger"
                       />
                     </div>
                   )}

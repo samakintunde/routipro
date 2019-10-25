@@ -25,21 +25,33 @@
       height: rem-calc(128);
 
       > .LazyLoad {
-        background-color: color(gray-light);
+        background: linear-gradient(to right, #818181, #d8d8d8);
+        -webkit-animation: image-loader 1s ease infinite;
+        -moz-animation: image-loader 1s ease infinite;
+        animation: image-loader 1s ease-in-out infinite;
         height: 100%;
+        transition: 0.56s ease-in-out;
       }
       > * > img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        // opacity: 0;
       }
     }
 
     &__map {
-      transition: 0.3s ease-in-out;
+      transition: 0.56s ease-in-out;
       overflow: hidden;
       height: 100%;
+      opacity: 0;
+
+      &--loaded {
+        opacity: 1;
+      }
+
+      &--loading {
+        opacity: 0;
+      }
     }
 
     p {
@@ -50,30 +62,40 @@
       padding: 0 rem-calc(4);
       cursor: pointer;
       margin-left: rem-calc(8);
-
-      .anticon {
-        transition: 0.3s ease-in-out;
-        color: color(gray);
-      }
-
-      &:hover .bus-stop__close-btn {
-        color: color(accent-2);
-      }
-      &:hover .bus-stop__save-btn {
-        color: color(accent-1);
-      }
-      &:hover .bus-stop__edit-btn {
-        color: color(black);
-      }
     }
   }
 }
 
-@keyframes image-loading {
+@-webkit-keyframes image-loader {
   0% {
-    background: linear-gradient(color(gray), color(gray-dark));
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
   100% {
-    background: linear-gradient(color(gray), color(gray-dark));
+    background-position: 0% 50%;
+  }
+}
+@-moz-keyframes image-loader {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes image-loader {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

@@ -26,6 +26,7 @@ const routeReducer = (state = initialState, action) => {
   switch (type) {
     case SET_ROUTE_POINTS:
       return { ...state, ...payload };
+
     case ADD_ROUTE_STOP:
       stops = [...state.stops, payload];
       stops = makeObjectsOfArrayUnique(stops, "name");
@@ -58,7 +59,6 @@ const routeReducer = (state = initialState, action) => {
       // Get elements preceeding and after
       let prefixItems = stops.slice(0, destination);
       let suffixItems = stops.slice(destination);
-
       stops = [...prefixItems, stop, ...suffixItems];
 
       return { ...state, stops };

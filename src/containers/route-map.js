@@ -49,6 +49,7 @@ const RouteMap = () => {
   };
 
   const makeRoute = route => {
+    if (!("coordinates" in route.origin)) return;
     // Clear any previous route boxes from the map
     clearBoxes();
 
@@ -56,8 +57,14 @@ const RouteMap = () => {
     distance = distance * 1.609344;
 
     var request = {
-      origin: route.origin.name,
-      destination: route.destination.name,
+      origin: new LatLng(
+        route.origin.coordinates.lat,
+        route.origin.coordinates.lng
+      ),
+      destination: new LatLng(
+        route.destination.coordinates.lat,
+        route.destination.coordinates.lng
+      ),
       travelMode: google.maps.DirectionsTravelMode.DRIVING
     };
 
@@ -145,7 +152,12 @@ const RouteMap = () => {
 
         setLoading(dispatchRoute, false);
       } else {
-        alert("Directions query failed: " + status);
+        setLoading(dispatchRoute, false);
+        return Modal.error({
+          title: "Directions not found",
+          content:
+            "Please, check the places you're searching and try being more accurate with the address or choose some other nearby location."
+        });
       }
     });
   };
@@ -177,7 +189,7 @@ const RouteMap = () => {
 
   useEffect(init, []);
 
-  useEffect(() => makeRoute(route), [route.origin.name]);
+  useEffect(() => makeRoute(route), [route.origin, route.destination]);
 
   return <div ref={mapEl} id="main-map" className="map"></div>;
 };

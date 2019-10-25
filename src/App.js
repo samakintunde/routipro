@@ -3,7 +3,7 @@ import { message } from "antd";
 
 import { Header } from "./components";
 import { RouteMap } from "./containers/";
-import { RouteForm, Results } from "./containers/index";
+import { RouteForm, ResultsSidebar, Results } from "./containers/index";
 import { RouteContext } from "./context/route-context";
 
 import "./assets/scss/app.scss";
@@ -19,7 +19,7 @@ const App = () => {
     message.error("Something bad has happened!");
   };
 
-  const sendBusStops = async e => {
+  const sendBusStops = async endpoint => {
     const { origin, stops, destination } = route;
 
     const data = {
@@ -28,7 +28,7 @@ const App = () => {
       stops: [origin, ...stops, destination]
     };
 
-    const res = await fetch("http://127.0.0.1:8080/v1/routes", {
+    const res = await fetch(endpoint, {
       method: "POST",
       mode: "no-cors",
       body: JSON.stringify(data)
@@ -36,6 +36,8 @@ const App = () => {
     console.log("res", res);
 
     success();
+
+    return res;
   };
 
   return (
@@ -43,13 +45,13 @@ const App = () => {
       <Header
         title="Routipro"
         showButton={route.stops.length ? true : false}
-        sendData={sendBusStops}
+        sendBusStops={sendBusStops}
       />
       <main className="main grid-x main--home">
         <div className="cell small-12 map-container">
           <RouteMap />
         </div>
-        {!route.stops.length && (
+        {route.stops.length === 0 && (
           <div className="cell align-self-bottom medium-6 large-4 grid-container padding-bottom-1 form-container">
             <div className="grid-x align-center card">
               <div className="cell large-12">
@@ -58,7 +60,7 @@ const App = () => {
             </div>
           </div>
         )}
-        {route.stops.length && <Results route={route} />}
+        {route.stops.length !== 0 && <ResultsSidebar />}
       </main>
     </div>
   );
