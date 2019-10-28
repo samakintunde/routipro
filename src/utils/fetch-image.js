@@ -1,8 +1,17 @@
 import imageToBase64 from "image-to-base64";
+import localForage from "localforage";
+
+localForage.config({
+  driver: localForage.INDEXEDDB,
+  name: 'Image cache',
+  version: 1.0,
+  storeName: 'imagecache',
+  description: 'Staffbus map application'
+})
 
 class ImageCache {
   constructor(version = "v1") {
-    this.cache = window.localStorage;
+    this.cache = localForage;
     this.version = version;
   }
 
@@ -10,8 +19,8 @@ class ImageCache {
    * Gets and image from the cache (LocalStorage)
    * @returns {String} base64URL
    */
-  getImage(name) {
-    const res = this.cache.getItem(`${this.version}/image/${name}`);
+  async getImage(name) {
+    const res = await this.cache.getItem(`${this.version}/image/${name}`);
     return res;
   }
 
@@ -40,11 +49,20 @@ class ImageCache {
    */
   async addImage(name, url) {
     const res = await this.fetchImage(url);
+    console.log("res: ", res);
 
-    this.cache.setItem(
+    await this.cache.setItem(
       `${this.version}/image/${name}`,
       this.toBase64Image(res)
     );
+
+    localForage.keys((err, keys) => {
+      if (err != null) {
+        console.log(err)
+      } else {
+        console.log("keys", keys)
+      }
+    })
 
     return this.toBase64Image(res);
   }
@@ -58,4 +76,6 @@ class ImageCache {
 
 // }
 
-export { ImageCache };
+export {
+  ImageCache
+};
