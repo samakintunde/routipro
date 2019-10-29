@@ -1,8 +1,8 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LazyLoad from "react-lazy-load";
 
-import { STATIC_MAP } from "../services/api";
 import BusStopModel from "../models/bus-stop";
+import { STATIC_MAP } from "../services/api";
 import { ImageCache } from "../utils/fetch-image";
 
 const Map = props => {
@@ -11,7 +11,7 @@ const Map = props => {
   const { coordinates } = stop;
 
   // STATE
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
 
   // REFS
@@ -23,9 +23,10 @@ const Map = props => {
 
   const renderImage = async (name, url) => {
     const cache = new ImageCache();
+    const image = await cache.getImage();
 
     // If Item exists in cache
-    if (cache.getImage(name)) {
+    if (image) {
       const base64Image = cache.getImage(name);
       setImage(base64Image);
     } else {
@@ -44,9 +45,9 @@ const Map = props => {
     center: new google.maps.LatLng(coordinates.lat, coordinates.lng),
 
     disableDefaultUI: true,
-    gestureHandling: "cooperative",
+    gestureHandling: 'cooperative',
     mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoom: 15
+    zoom: 15,
   };
 
   function getPlaceDetails(position) {
@@ -59,8 +60,8 @@ const Map = props => {
           name: results[0].address_components[0].short_name,
           coordinates: {
             lat: results[0].geometry.location.lat(),
-            lng: results[0].geometry.location.lng()
-          }
+            lng: results[0].geometry.location.lng(),
+          },
         };
         const busStop = new BusStopModel(data);
         handleEdit({ index, stop: busStop });
@@ -79,10 +80,10 @@ const Map = props => {
       position: coordinates,
       map: map.current,
       animation: google.maps.Animation.DROP,
-      draggable: true
+      draggable: true,
     });
 
-    google.maps.event.addListener(marker, "dragend", () => {
+    google.maps.event.addListener(marker, 'dragend', () => {
       getPlaceDetails(marker.getPosition());
     });
   }
@@ -113,7 +114,7 @@ const Map = props => {
         >
           <img
             className={`bus-stop__map bus-stop__map--visible ${
-              imageLoaded ? "bus-stop__map--loaded" : "bus-stop__map-loading"
+              imageLoaded ? 'bus-stop__map--loaded' : 'bus-stop__map-loading'
             }`}
             src={image}
             alt={stop.name}

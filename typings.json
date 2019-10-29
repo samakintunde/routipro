@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "reselect": "registry:dt/reselect#2.0.2+20160510002910"
+  }
+}
