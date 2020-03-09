@@ -23,7 +23,7 @@ const RouteMap = () => {
 
   const routeBoxer = useRef(new RouteBoxer());
 
-  let distance = 1;
+  let distance = 0.1;
   let boxpolys = null;
   let map = null;
 

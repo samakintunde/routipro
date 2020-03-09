@@ -81,7 +81,7 @@ const ResultsSidebar = () => {
       .go(query, route.stops, searchOptions)
       .map(result => result.obj);
     setQueriedStops(searchResults);
-  }, 500);
+  }, 1500);
 
   const handleSearch = e => {
     const { value } = e.target;
