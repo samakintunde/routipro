@@ -54,7 +54,7 @@ const BusStop = props => {
       {provided => (
         <div
           {...provided.draggableProps}
-          {...provided.dragHandleProps}
+          {...provided.dragHandlefProps}
           ref={provided.innerRef}
         >
           <motion.div
@@ -68,7 +68,6 @@ const BusStop = props => {
               opacity: 0,
               transition: 0.3
             }}
-            positionTransition
           >
             <div className="cell">
               <div className="grid-x align-justify">
