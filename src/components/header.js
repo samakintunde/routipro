@@ -53,7 +53,12 @@ const Header = props => {
         </div>
         {showButton && (
           <div>
-            <Button size="small" onClick={renderModal}>
+            <Button
+              className="button--primary"
+              type="primary"
+              size="small"
+              onClick={renderModal}
+            >
               Send To Endpoint
             </Button>
             <Modal
